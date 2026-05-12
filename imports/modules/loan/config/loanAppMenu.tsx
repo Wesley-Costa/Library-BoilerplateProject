@@ -6,6 +6,6 @@ export const loanMenuItemList: (IAppMenu | null)[] = [
 	{
 		path: '/loan',
 		name: 'Empréstimos',
-		icon: <SysIcon name={'dashboard'} />
+		icon: <SysIcon name={'shoppingCart'} />
 	}
 ];

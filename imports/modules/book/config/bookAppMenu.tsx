@@ -6,6 +6,6 @@ export const bookMenuItemList: (IAppMenu | null)[] = [
 	{
 		path: '/book',
 		name: 'Livro',
-		icon: <SysIcon name={'dashboard'} />
+		icon: <SysIcon name={'book'} />
 	}
 ];

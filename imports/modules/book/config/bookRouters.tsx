@@ -4,21 +4,27 @@ import { IRoute } from '../../modulesTypings';
 
 export const bookRouterList: (IRoute | null)[] = [
 	{
-		path: '/book/:screenState/:bookId',
+		path: '/book',
 		component: bookContainer,
 		isProtected: true,
 		resources: [Recurso.BOOK_VIEW]
 	},
 	{
-		path: '/book/:screenState',
+		path: '/book/create',
 		component: bookContainer,
 		isProtected: true,
 		resources: [Recurso.BOOK_CREATE]
 	},
 	{
-		path: '/book',
+		path: '/book/edit/:bookId',
 		component: bookContainer,
 		isProtected: true,
-		resources: [Recurso.BOOK_VIEW]
+		resources: [Recurso.BOOK_UPDATE]
+	},
+	{
+		path: '/book/delete/:bookId',
+		component: bookContainer,
+		isProtected: true,
+		resources: [Recurso.BOOK_REMOVE]
 	}
 ];

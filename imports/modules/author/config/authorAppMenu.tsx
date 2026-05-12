@@ -6,6 +6,6 @@ export const authorMenuItemList: (IAppMenu | null)[] = [
 	{
 		path: '/author',
 		name: 'Autor',
-		icon: <SysIcon name={'dashboard'} />
+		icon: <SysIcon name={'person'} />
 	}
 ];

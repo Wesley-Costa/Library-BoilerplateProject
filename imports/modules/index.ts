@@ -1,17 +1,20 @@
 import { IAppMenu, IModuleHub, IRoute } from './modulesTypings';
-import Example from './example/config';
-import Aniversario from './aniversario/config';
+import Loan from './loan/config';
+import Book from './book/config';
+import Author from './author/config';
 import UserProfile from './userprofile/config';
 
 const pages: Array<IRoute | null> = [
-	...Example.pagesRouterList, 
-	...Aniversario.pagesRouterList, 
+	...Loan.pagesRouterList,
+	...Book.pagesRouterList,
+	...Author.pagesRouterList,
 	...UserProfile.pagesRouterList
 ];
 
 const menuItens: Array<IAppMenu | null> = [
-	...Example.pagesMenuItemList, 
-	...Aniversario.pagesMenuItemList,
+	...Loan.pagesMenuItemList,
+	...Book.pagesMenuItemList,
+	...Author.pagesMenuItemList,
 	...UserProfile.pagesMenuItemList
 ];
 
