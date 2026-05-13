@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { AuthorCreateControllerContext } from './authorCreateContoller';
-import { AuthorModuleContext } from '../../authorContainer';
-import AuthorCreateStyles from './authorCreateStyles';
+import { AuthorsListControllerContext } from './authorsListController';
+import { AuthorsModuleContext } from '../../authorsContainer';
+import AuthorListStyles from './authorsListStyles';
 import SysForm from '../../../../ui/components/sysForm/sysForm';
 import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
 import Typography from '@mui/material/Typography';
@@ -16,13 +16,13 @@ import SysSlider from '../../../../ui/components/sysFormFields/sysSlider/sysSlid
 import { SysLocationField } from '../../../../ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 
-const AuthorCreateView = () => {
-	const controller = useContext(AuthorCreateControllerContext);
-	const { state } = useContext(AuthorModuleContext);
+const AuthorsListView = () => {
+	const controller = useContext(AuthorsListControllerContext);
+	const { state } = useContext(AuthorsModuleContext);
 	const isView = state === 'view';
 	const isEdit = state === 'edit';
-	const isCreate = state === 'create';
-	const { Container, Body, Header, Footer, FormColumn } = AuthorCreateStyles;
+	const isList = state === 'create';
+	const { Container, Body, Header, Footer, FormColumn } = AuthorListStyles;
 
 	return (
 		<Container>
@@ -32,9 +32,6 @@ const AuthorCreateView = () => {
 						<SysIcon name={'arrowBack'} />
 					</IconButton>
 				)}
-				<Typography variant="h5" sx={{ flexGrow: 1 }}>
-					{isCreate ? 'Adicionar Item' : isEdit ? 'Editar Item' : controller.document.title}
-				</Typography>
 				<IconButton
 					onClick={!isView ? controller.closePage : () => controller.changeToEdit(controller.document._id || '')}>
 					{!isView ? <SysIcon name={'close'} /> : <SysIcon name={'edit'} />}
@@ -80,4 +77,4 @@ const AuthorCreateView = () => {
 	);
 };
 
-export default AuthorCreateView;
+export default AuthorsListView;

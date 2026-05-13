@@ -1,16 +1,16 @@
 import React from 'react';
 import { IDefaultContainerProps } from '../../typings/BoilerplateDefaultTypings';
 import { useParams } from 'react-router-dom';
-import AuthorListController from '../../modules/author/pages/authorList/authorListController';
-import AuthorDetailController from '../../modules/author/pages/authorDetail/authorDetailContoller';
-import AuthorCreateController from '../../modules/author/pages/authorCreate/authorCreateContoller';
+import AuthorCreateController from './pages/authorsCreate/authorsCreateContoller';
+import AuthorDetailController from './pages/authorsDetail/authorsDetailContoller';
+import AuthorListController from './pages/authorsList/authorsListController';
 
-export interface IAuthorModuleContext {
+export interface IAuthorsModuleContext {
 	state?: string;
 	id?: string;
 }
 
-export const AuthorModuleContext = React.createContext<IAuthorModuleContext>({});
+export const AuthorsModuleContext = React.createContext<IAuthorsModuleContext>({});
 
 export default (props: IDefaultContainerProps) => {
 	let { screenState, authorId } = useParams();
@@ -29,5 +29,5 @@ export default (props: IDefaultContainerProps) => {
 		state,
 		id
 	};
-	return <AuthorModuleContext.Provider value={providerValue}>{renderPage()}</AuthorModuleContext.Provider>;
+	return <AuthorsModuleContext.Provider value={providerValue}>{renderPage()}</AuthorsModuleContext.Provider>;
 };

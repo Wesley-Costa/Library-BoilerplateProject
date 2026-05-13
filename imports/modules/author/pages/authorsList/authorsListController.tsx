@@ -1,51 +1,51 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import AuthorDetailView from './authorDetailView';
+import AuthorsListView from './authorsListView';
 import { useNavigate } from 'react-router-dom';
-import { AuthorModuleContext } from '../../authorContainer';
+import { AuthorsModuleContext } from '../../authorsContainer';
 import { useTracker } from 'meteor/react-meteor-data';
-import { authorApi } from '../../api/authorApi';
-import { IAuthor } from '../../api/authorSch';
+import { authorsApi } from '../../api/authorsApi';
+import { IAuthors } from '../../api/authorsSch';
 import { ISchema } from '../../../../typings/ISchema';
 import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 
-interface IAuthorDetailContollerContext {
+interface IAuthorsListContollerContext {
 	closePage: () => void;
-	document: IAuthor;
+	document: IAuthors;
 	loading: boolean;
-	schema: ISchema<IAuthor>;
-	onSubmit: (doc: IAuthor) => void;
+	schema: ISchema<IAuthors>;
+	onSubmit: (doc: IAuthors) => void;
 	changeToEdit: (id: string) => void;
 }
 
-export const AuthorDetailControllerContext = createContext<IAuthorDetailContollerContext>(
-	{} as IAuthorDetailContollerContext
+export const AuthorsListControllerContext = createContext<IAuthorsListContollerContext>(
+	{} as IAuthorsListContollerContext
 );
 
-const AuthorDetailController = () => {
+const AuthorsListController = () => {
 	const navigate = useNavigate();
-	const { id, state } = useContext(AuthorModuleContext);
+	const { id, state } = useContext(AuthorsModuleContext);
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
 	const { document, loading } = useTracker(() => {
-		const subHandle = !!id ? authorApi.subscribe('authorDetail', { _id: id }) : null;
-		const document = id && subHandle?.ready() ? authorApi.findOne({ _id: id }) : {};
+		const subHandle = !!id ? authorsApi.subscribe('authors.list', { _id: id }) : null;
+		const document = id && subHandle?.ready() ? authorsApi.findOne({ _id: id }) : {};
 		return {
-			document: (document as IAuthor) ?? ({ _id: id } as IAuthor),
+			document: (document as IAuthors) ?? ({ _id: id } as IAuthors),
 			loading: !!subHandle && !subHandle?.ready()
 		};
 	}, [id]);
 
 	const closePage = useCallback(() => {
-		navigate(-1);
+		navigate('/');
 	}, []);
 	const changeToEdit = useCallback((id: string) => {
 		navigate(`/author/edit/${id}`);
 	}, []);
 
-	const onSubmit = useCallback((doc: IAuthor) => {
+	const onSubmit = useCallback((doc: IAuthors) => {
 		const selectedAction = state === 'create' ? 'insert' : 'update';
-		authorApi[selectedAction](doc, (e: IMeteorError) => {
+		authorsApi[selectedAction](doc, (e: IMeteorError) => {
 			if (!e) {
 				closePage();
 				showNotification({
@@ -64,18 +64,18 @@ const AuthorDetailController = () => {
 	}, []);
 
 	return (
-		<AuthorDetailControllerContext.Provider
+		<AuthorsListControllerContext.Provider
 			value={{
 				closePage,
 				document: { ...document, _id: id },
 				loading,
-				schema: authorApi.getSchema(),
+				schema: authorsApi.getSchema(),
 				onSubmit,
 				changeToEdit
 			}}>
-			{<AuthorDetailView />}
-		</AuthorDetailControllerContext.Provider>
+			{<AuthorsListView />}
+		</AuthorsListControllerContext.Provider>
 	);
 };
 
-export default AuthorDetailController;
+export default AuthorsListController;
