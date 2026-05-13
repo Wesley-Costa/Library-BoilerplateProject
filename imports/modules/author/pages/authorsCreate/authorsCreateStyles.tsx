@@ -4,7 +4,7 @@ import Box, { BoxProps } from '@mui/material/Box';
 import { sysSizing } from '../../../../ui/materialui/styles';
 import { SysSectionPaddingXY } from '../../../../ui/layoutComponents/sysLayoutComponents';
 
-interface IAuthorDetailStyles {
+interface IAuthorsCreateStyles {
 	Container: ElementType<BoxProps>;
 	Header: ElementType<BoxProps>;
 	Body: ElementType<BoxProps>;
@@ -12,7 +12,7 @@ interface IAuthorDetailStyles {
 	FormColumn: ElementType<BoxProps>;
 }
 
-const AuthorDetailStyles: IAuthorDetailStyles = {
+const AuthorsCreateStyles: IAuthorsCreateStyles = {
 	Container: styled(SysSectionPaddingXY)(() => ({
 		display: 'flex',
 		flexDirection: 'column',
@@ -58,4 +58,4 @@ const AuthorDetailStyles: IAuthorDetailStyles = {
 	})
 };
 
-export default AuthorDetailStyles;
+export default AuthorsCreateStyles;
