@@ -1,6 +1,6 @@
 // region Imports
 import { Recurso } from '../config/recursos';
-import { loanSch, ILoan } from './loanSch';
+import { loansSch, ILoans } from './loansSch';
 import { userprofileServerApi } from '../../userprofile/api/userProfileServerApi';
 import { ProductServerBase } from '../../../api/productServerBase';
 
@@ -16,29 +16,16 @@ const PROJECTION_LOAN = {
 	observation: 1
 }
 
-class LoanServerApi extends ProductServerBase<ILoan> {
+class LoanServerApi extends ProductServerBase<ILoans> {
 	constructor() {
-		super('loan', loanSch, {
+		super('loans', loansSch, {
 			resources: Recurso
 		});
 
 		const self = this;
 
-		this.addTransformedPublication(
-			'loanList',
-			(filter = {}) => {
-				return this.defaultListCollectionPublication(filter, {
-					projection: PROJECTION_LOAN
-				});
-			},
-			async (doc: ILoan & { nomeUsuario: string }) => {
-				const userProfileDoc = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
-				return { ...doc };
-			}
-		);
-
-		this.addPublication('loanDetail', (filter = {}) => {
-			return this.defaultDetailCollectionPublication(filter, {
+		this.addPublication('loans.detail', function (this: any, filter = {}) {
+			return self.defaultDetailCollectionPublication(filter, {
 				projection: PROJECTION_LOAN
 			});
 		});

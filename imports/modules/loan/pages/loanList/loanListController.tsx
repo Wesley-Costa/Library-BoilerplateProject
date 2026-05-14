@@ -1,37 +1,37 @@
 import React, { createContext, useCallback, useContext } from 'react';
 import LoanListView from './loanListView';
 import { useNavigate } from 'react-router-dom';
-import { LoanModuleContext } from '../../loanContainer';
+import { LoansModuleContext } from '../../loansContainer';
 import { useTracker } from 'meteor/react-meteor-data';
-import { loanApi } from '../../api/loanApi';
-import { ILoan } from '../../api/loanSch';
+import { loansApi } from '../../api/loansApi';
+import { ILoans } from '../../api/loansSch';
 import { ISchema } from '../../../../typings/ISchema';
 import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 
-interface ILoanListContollerContext {
+interface ILoansListContollerContext {
 	closePage: () => void;
-	document: ILoan;
+	document: ILoans;
 	loading: boolean;
-	schema: ISchema<ILoan>;
-	onSubmit: (doc: ILoan) => void;
+	schema: ISchema<ILoans>;
+	onSubmit: (doc: ILoans) => void;
 	changeToEdit: (id: string) => void;
 }
 
-export const LoanListControllerContext = createContext<ILoanListContollerContext>(
-	{} as ILoanListContollerContext
+export const LoansListControllerContext = createContext<ILoansListContollerContext>(
+	{} as ILoansListContollerContext
 );
 
-const LoanListController = () => {
+const LoansListController = () => {
 	const navigate = useNavigate();
-	const { id, state } = useContext(LoanModuleContext);
+	const { id, state } = useContext(LoansModuleContext);
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
 	const { document, loading } = useTracker(() => {
-		const subHandle = !!id ? loanApi.subscribe('loanList', { _id: id }) : null;
-		const document = id && subHandle?.ready() ? loanApi.findOne({ _id: id }) : {};
+		const subHandle = !!id ? loansApi.subscribe('loans.list', { _id: id }) : null;
+		const document = id && subHandle?.ready() ? loansApi.findOne({ _id: id }) : {};
 		return {
-			document: (document as ILoan) ?? ({ _id: id } as ILoan),
+			document: (document as ILoans) ?? ({ _id: id } as ILoans),
 			loading: !!subHandle && !subHandle?.ready()
 		};
 	}, [id]);
@@ -43,9 +43,9 @@ const LoanListController = () => {
 		navigate(`/loan/edit/${id}`);
 	}, []);
 
-	const onSubmit = useCallback((doc: ILoan) => {
+	const onSubmit = useCallback((doc: ILoans) => {
 		const selectedAction = state === 'create' ? 'insert' : 'update';
-		loanApi[selectedAction](doc, (e: IMeteorError) => {
+		loansApi[selectedAction](doc, (e: IMeteorError) => {
 			if (!e) {
 				closePage();
 				showNotification({
@@ -64,18 +64,18 @@ const LoanListController = () => {
 	}, []);
 
 	return (
-		<LoanListControllerContext.Provider
+		<LoansListControllerContext.Provider
 			value={{
 				closePage,
 				document: { ...document, _id: id },
 				loading,
-				schema: loanApi.getSchema(),
+				schema: loansApi.getSchema(),
 				onSubmit,
 				changeToEdit
 			}}>
 			{<LoanListView />}
-		</LoanListControllerContext.Provider>
+		</LoansListControllerContext.Provider>
 	);
 };
 
-export default LoanListController;
+export default LoansListController;

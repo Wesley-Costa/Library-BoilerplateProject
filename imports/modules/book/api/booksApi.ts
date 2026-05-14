@@ -1,14 +1,14 @@
 // region Imports
 import { ProductBase } from '../../../api/productBase';
-import { bookSch, IBook } from './bookSch';
+import { booksSch, IBooks } from './booksSch';
 
-class BookApi extends ProductBase<IBook> {
+class BooksApi extends ProductBase<IBooks> {
 	constructor() {
-		super('book', bookSch, {
+		super('books', booksSch, {
 			enableCallMethodObserver: true,
 			enableSubscribeObserver: true
 		});
 	}
 }
 
-export const bookApi = new BookApi();
+export const booksApi = new BooksApi();

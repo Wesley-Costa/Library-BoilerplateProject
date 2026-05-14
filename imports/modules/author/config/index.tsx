@@ -1,10 +1,10 @@
-import { authorMenuItemList } from './authorAppMenu';
-import { authorRouterList } from './authorRouters';
+import { authorsMenuItemList } from './authorAppMenu';
+import { authorsRouterList } from './authorRouters';
 import { IModuleHub } from '../../../modules/modulesTypings';
 
 const Author: IModuleHub = {
-	pagesRouterList: authorRouterList,
-	pagesMenuItemList: authorMenuItemList
+	pagesRouterList: authorsRouterList,
+	pagesMenuItemList: authorsMenuItemList
 };
 
 export default Author;

@@ -1,10 +1,10 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import BookListView from './bookDetailView';
+import BookListView from './bookListView';
 import { useNavigate } from 'react-router-dom';
-import { BookModuleContext } from '../../bookContainer';
+import { BookModuleContext } from '../../booksContainer';
 import { useTracker } from 'meteor/react-meteor-data';
-import { bookApi } from '../../api/bookApi';
-import { IBook } from '../../api/bookSch';
+import { bookApi } from '../../api/booksApi';
+import { IBook } from '../../api/booksSch';
 import { ISchema } from '../../../../typings/ISchema';
 import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';

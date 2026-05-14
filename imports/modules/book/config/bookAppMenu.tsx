@@ -1,11 +1,13 @@
 import React from 'react';
 import { IAppMenu } from '../../modulesTypings';
 import SysIcon from '../../../ui/components/sysIcon/sysIcon';
+import { Recurso } from './recursos';
 
-export const bookMenuItemList: (IAppMenu | null)[] = [
+export const booksMenuItemList: (IAppMenu | null)[] = [
 	{
-		path: '/book',
-		name: 'Livro',
-		icon: <SysIcon name={'book'} />
+		path: '/books/create',
+		name: 'Registrar Livro',
+		icon: <SysIcon name={'book'} />,
+		resources: [Recurso.BOOK_CREATE]
 	}
 ];
