@@ -1,40 +1,44 @@
 import { IDoc } from '../../../typings/IDoc';
 import { ISchema } from '../../../typings/ISchema';
 
-export interface ILoan extends IDoc {
+export interface ILoans extends IDoc {
     bookId: string;
+    borrowedVolumes: number;
     userId: string;
     status: 'borrowed' | 'returned';
-    borrowedVolumes: number;
     loanDate: Date;
     returnDate: Date;
     observation: string;
+    createdBy: string | null;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-export const loanSch: ISchema<ILoan> = {
+export const loansSch: ISchema<ILoans> = {
     bookId: {
         type: String,
         label: 'Livro',
         defaultValue: '',
-        optional: false
+        optional: true
     },
 	borrowedVolumes: {
 		type: Number,
 		label: 'Quantidade de Volumes Emprestados',
 		defaultValue: 1,
-		optional: false
+		optional: true,
+        min: 1
 	},
     userId: {
         type: String,
         label: 'Usuário que Emprestou',
         defaultValue: '',
-        optional: false
+        optional: true
     },
     status: {
         type: String,
         label: 'Status',
         defaultValue: 'borrowed',
-        optional: false,
+        optional: true,
         options: () => [
             { value: 'borrowed', label: 'Emprestado' },
             { value: 'returned', label: 'Devolvido' }
@@ -44,7 +48,7 @@ export const loanSch: ISchema<ILoan> = {
         type: Date,
         label: 'Data do Empréstimo',
         defaultValue: '',
-        optional: false
+        optional: true
     },
     returnDate: {
         type: Date,
@@ -55,6 +59,24 @@ export const loanSch: ISchema<ILoan> = {
     observation: {
         type: String,
         label: 'Observação',
+        defaultValue: '',
+        optional: true
+    },
+    createdBy: {
+        type: String,
+        label: 'Criado por',
+        defaultValue: '',
+        optional: true
+    },
+    createdAt: {
+        type: Date,
+        label: 'Data de Criação',
+        defaultValue: '',
+        optional: true
+    },
+    updatedAt: {
+        type: Date,
+        label: 'Data de Atualização',
         defaultValue: '',
         optional: true
     }

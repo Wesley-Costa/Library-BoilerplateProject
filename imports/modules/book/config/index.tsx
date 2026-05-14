@@ -1,10 +1,10 @@
-import { bookRouterList } from './bookRouters';
-import { bookMenuItemList } from './bookAppMenu';
+import { booksRouterList } from './bookRouters';
+import { booksMenuItemList } from './bookAppMenu';
 import { IModuleHub } from '../../modulesTypings';
 
 const Book: IModuleHub = {
-	pagesRouterList: bookRouterList,
-	pagesMenuItemList: bookMenuItemList
+	pagesRouterList: booksRouterList,
+	pagesMenuItemList: booksMenuItemList
 };
 
 export default Book;

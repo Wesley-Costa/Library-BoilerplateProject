@@ -2,13 +2,13 @@ import { IDoc } from '../../../typings/IDoc';
 import { ISchema } from '../../../typings/ISchema';
 
 export interface IAuthors extends IDoc {
-    name?: string;
-    nationality?: string;
-    birthDate?: Date;
-    biography?: string;
-    createdBy?: string | null;
-    createdAt?: Date;
-    updatedAt?: Date;
+    name: string;
+    nationality: string;
+    birthDate: Date;
+    biography: string;
+    createdBy: string | null;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export const authorsSch: ISchema<IAuthors> = {

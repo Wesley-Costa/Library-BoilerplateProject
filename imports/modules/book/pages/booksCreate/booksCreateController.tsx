@@ -1,26 +1,24 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import LoansCreateView from './loanCreateView';
+import BooksCreateView from './booksCreateView';
 import { useNavigate } from 'react-router-dom';
-import { loansApi } from '../../api/loansApi';
-import { ILoans } from '../../api/loansSch';
+import { Meteor } from 'meteor/meteor';
+import { booksApi } from '../../api/booksApi';
+import { IBooks } from '../../api/booksSch';
 import { ISchema } from '../../../../typings/ISchema';
 import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
-import { Meteor } from 'meteor/meteor';
 
-interface ILoansCreateControllerContext {
+interface IBooksCreateControllerContext {
 	closePage: () => void;
-	document: ILoans;
-	schema: ISchema<ILoans>;
-	onSubmit: (doc: ILoans) => void;
+	document: IBooks;
+	schema: ISchema<IBooks>;
+	onSubmit: (doc: IBooks) => void;
 }
 
-export const LoansCreateControllerContext = createContext<ILoansCreateControllerContext>(
-	{} as ILoansCreateControllerContext
-);
+export const BooksCreateControllerContext = createContext<IBooksCreateControllerContext>({} as IBooksCreateControllerContext);
 
-const LoansCreateController = () => {
-const navigate = useNavigate();
+const BooksCreateController = () => {
+	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
 	const closePage = useCallback(() => {
@@ -28,19 +26,19 @@ const navigate = useNavigate();
 	}, []);
 
 	const onSubmit = useCallback(
-		(doc: ILoans) => {
+		(doc: IBooks) => {
 			const user = Meteor.userId();
 			const createdAt = new Date();
 			const updatedAt = new Date();
 
-			const enrichedDoc: ILoans = {
+			const enrichedDoc: IBooks = {
 				...doc,
 				createdBy: user,
 				createdAt: createdAt,
 				updatedAt: updatedAt
 			};
 
-			loansApi.insert(enrichedDoc, (e: IMeteorError) => {
+			booksApi.insert(enrichedDoc, (e: IMeteorError) => {
 				if (!e) {
 					closePage();
 					showNotification({
@@ -63,16 +61,16 @@ const navigate = useNavigate();
 	);
 
 	return (
-		<LoansCreateControllerContext.Provider
+		<BooksCreateControllerContext.Provider
 			value={{
 				closePage,
-				document: {} as ILoans,
-				schema: loansApi.getSchema(),
+				document: {} as IBooks,
+				schema: booksApi.getSchema(),
 				onSubmit
 			}}>
-			{<LoansCreateView />}
-		</LoansCreateControllerContext.Provider>
+			{<BooksCreateView />}
+		</BooksCreateControllerContext.Provider>
 	);
 };
 
-export default LoansCreateController;
+export default BooksCreateController;

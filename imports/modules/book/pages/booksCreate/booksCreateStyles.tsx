@@ -4,7 +4,7 @@ import Box, { BoxProps } from '@mui/material/Box';
 import { sysSizing } from '../../../../ui/materialui/styles';
 import { SysSectionPaddingXY } from '../../../../ui/layoutComponents/sysLayoutComponents';
 
-interface IBookListStyles {
+interface IBooksCreateStyles {
 	Container: ElementType<BoxProps>;
 	Header: ElementType<BoxProps>;
 	Body: ElementType<BoxProps>;
@@ -12,7 +12,7 @@ interface IBookListStyles {
 	FormColumn: ElementType<BoxProps>;
 }
 
-const BookListStyles: IBookListStyles = {
+const BooksCreateStyles: IBooksCreateStyles = {
 	Container: styled(SysSectionPaddingXY)(() => ({
 		display: 'flex',
 		flexDirection: 'column',
@@ -58,4 +58,4 @@ const BookListStyles: IBookListStyles = {
 	})
 };
 
-export default BookListStyles;
+export default BooksCreateStyles;

@@ -20,7 +20,7 @@ const AuthorsDetailView = () => {
 			</Header>
 
 			<SysForm
-				mode="create"
+				mode="edit"
 				schema={controller.schema}
 				doc={controller.document}
 				onSubmit={controller.onSubmit}>
@@ -41,7 +41,6 @@ const AuthorsDetailView = () => {
 						Cancelar
 					</SysButton>
 					<SysFormButton>Salvar</SysFormButton>
-
 				</Footer>
 			</SysForm>
 		</Container>

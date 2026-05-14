@@ -1,14 +1,14 @@
 // region Imports
 import { ProductBase } from '../../../api/productBase';
-import { loanSch, ILoan } from './loanSch';
+import { loansSch, ILoans } from './loansSch';
 
-class LoanApi extends ProductBase<ILoan> {
+class LoansApi extends ProductBase<ILoans> {
 	constructor() {
-		super('loan', loanSch, {
+		super('loans', loansSch, {
 			enableCallMethodObserver: true,
 			enableSubscribeObserver: true
 		});
 	}
 }
 
-export const loanApi = new LoanApi();
+export const loansApi = new LoansApi();

@@ -1,7 +1,7 @@
-import { Recurso as Exemplo } from '/imports/modules/example/config/recursos';
-import { Recurso as Aniversario } from '/imports/modules/aniversario/config/recursos';
 import { Recurso as Usuarios } from '/imports/modules/userprofile/config/recurso';
 import { Recurso as Author } from '../../modules/author/config/recursos';
+import { Recurso as Book } from '../../modules/book/config/recursos';
+import { Recurso as Loan } from '../../modules/loan/config/recursos';
 import { RoleType } from '/imports/security/config/roleType';
 import { HomeResources, SysFormTestPageResources } from '/imports/sysPages/config/resources';
 
@@ -12,11 +12,11 @@ type MapRolesRecursos = Record<RoleType, Array<string>>;
 const _mapRolesRecursos: MapRolesRecursos = {
 	[RoleType.PUBLICO]: [],
 	[RoleType.USUARIO]: [
-		..._getAllValues(Exemplo),
 		..._getAllValues(HomeResources),
 		..._getAllValues(SysFormTestPageResources),
-		..._getAllValues(Aniversario),
 		..._getAllValues(Author),
+		..._getAllValues(Book),
+		..._getAllValues(Loan),
 		Usuarios.USUARIO_UPDATE,
 		Usuarios.USUARIO_VIEW,
 	],

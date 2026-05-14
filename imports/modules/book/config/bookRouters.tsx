@@ -1,30 +1,24 @@
-import bookContainer from '../bookContainer';
+import booksContainer from '../booksContainer';
 import { Recurso } from './recursos';
 import { IRoute } from '../../modulesTypings';
 
-export const bookRouterList: (IRoute | null)[] = [
+export const booksRouterList: (IRoute | null)[] = [
 	{
-		path: '/book',
-		component: bookContainer,
+		path: '/books',
+		component: booksContainer,
 		isProtected: true,
 		resources: [Recurso.BOOK_VIEW]
 	},
 	{
-		path: '/book/create',
-		component: bookContainer,
+		path: '/books/:screenState',
+		component: booksContainer,
 		isProtected: true,
 		resources: [Recurso.BOOK_CREATE]
 	},
 	{
-		path: '/book/edit/:bookId',
-		component: bookContainer,
+		path: '/books/:screenState/:bookId',
+		component: booksContainer,
 		isProtected: true,
-		resources: [Recurso.BOOK_UPDATE]
-	},
-	{
-		path: '/book/delete/:bookId',
-		component: bookContainer,
-		isProtected: true,
-		resources: [Recurso.BOOK_REMOVE]
+		resources: [Recurso.BOOK_UPDATE, Recurso.BOOK_REMOVE]
 	}
 ];

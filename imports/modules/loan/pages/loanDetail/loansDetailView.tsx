@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { LoansCreateControllerContext } from './loanCreateController';
-import LoanListStyles from './loanCreateStyles';
+import { LoansDetailControllerContext } from './loansDetailController';
+import ILoansDetailStyles from './loansDetailStyles';
 import SysForm from '../../../../ui/components/sysForm/sysForm';
 import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
 import Typography from '@mui/material/Typography';
@@ -8,14 +8,14 @@ import { SysButton } from '../../../../ui/components/SimpleFormFields/SysButton/
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import SysFormButton from '../../../../ui/components/sysFormFields/sysFormButton/sysFormButton';
 
-const LoansCreateView = () => {
-	const controller = useContext(LoansCreateControllerContext);
-	const { Container, Body, Header, Footer, FormColumn } = LoanListStyles;
+const LoansDetailView = () => {
+	const controller = useContext(LoansDetailControllerContext);
+	const { Container, Body, Header, Footer, FormColumn } = ILoansDetailStyles;
 
 	return (
 		<Container>
 			<Header>
-				<Typography>Registrar Empréstimo</Typography>
+				<Typography>Adicionar Empréstimo</Typography>
 			</Header>
 
 			<SysForm mode="create" schema={controller.schema} doc={controller.document} onSubmit={controller.onSubmit}>
@@ -32,6 +32,9 @@ const LoansCreateView = () => {
 				</Body>
 
 				<Footer>
+					<SysButton variant="contained" color="error" startIcon={<SysIcon name="delete" />} onClick={controller.onDelete}>
+						Deletar
+					</SysButton>
 					<SysButton variant="outlined" startIcon={<SysIcon name="close" />} onClick={controller.closePage}>
 						Cancelar
 					</SysButton>
@@ -42,4 +45,4 @@ const LoansCreateView = () => {
 	);
 };
 
-export default LoansCreateView;
+export default LoansDetailView;

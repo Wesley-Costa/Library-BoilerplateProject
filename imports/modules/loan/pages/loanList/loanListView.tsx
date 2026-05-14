@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { LoanListControllerContext } from './loanListController';
-import { LoanModuleContext } from '../../loanContainer';
+import { LoansListControllerContext } from './loanListController';
+import { LoansModuleContext } from '../../loansContainer';
 import LoanListStyles from './loanListStyles';
 import SysForm from '../../../../ui/components/sysForm/sysForm';
 import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
@@ -17,8 +17,8 @@ import { SysLocationField } from '../../../../ui/components/sysFormFields/sysLoc
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 
 const LoanListView = () => {
-	const controller = useContext(LoanListControllerContext);
-	const { state } = useContext(LoanModuleContext);
+	const controller = useContext(LoansListControllerContext);
+	const { state } = useContext(LoansModuleContext);
 	const isView = state === 'view';
 	const isEdit = state === 'edit';
 	const isList = state === 'create';
@@ -32,9 +32,6 @@ const LoanListView = () => {
 						<SysIcon name={'arrowBack'} />
 					</IconButton>
 				)}
-				<Typography variant="h5" sx={{ flexGrow: 1 }}>
-					{isList ? 'Adicionar Item' : isEdit ? 'Editar Item' : controller.document.title}
-				</Typography>
 				<IconButton
 					onClick={!isView ? controller.closePage : () => controller.changeToEdit(controller.document._id || '')}>
 					{!isView ? <SysIcon name={'close'} /> : <SysIcon name={'edit'} />}

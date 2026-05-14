@@ -1,7 +1,7 @@
 import { IDoc } from '../../../typings/IDoc';
 import { ISchema } from '../../../typings/ISchema';
 
-export interface IBook extends IDoc {
+export interface IBooks extends IDoc {
     title: string;
 	description: string;
     authorId: string;
@@ -9,10 +9,13 @@ export interface IBook extends IDoc {
     publisher: string;
     yearPublication: number;
     category: string;
-    volumes: number;
+    volumes: number; 
+    createdBy: string | null;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-export const bookSch: ISchema<IBook> = {
+export const booksSch: ISchema<IBooks> = {
     title: {
         type: String,
         label: 'Título',
@@ -29,26 +32,26 @@ export const bookSch: ISchema<IBook> = {
         type: String,
         label: 'Autor',
         defaultValue: '',
-        optional: false
+        optional: true
     },
     isbn: {
         type: String,
         label: 'ISBN',
         defaultValue: '',
-        optional: true,
+        optional: false,
         mask: '###-##-####-###-#'
     },
     publisher: {
         type: String,
         label: 'Editora',
         defaultValue: '',
-        optional: true
+        optional: false
     },
     yearPublication: {
         type: Number,
         label: 'Ano de Publicação',
         defaultValue: '',
-        optional: true
+        optional: false
     },
     category: {
         type: String,
@@ -72,4 +75,22 @@ export const bookSch: ISchema<IBook> = {
         optional: false,
         min: 1
     },
+    createdBy: {
+        type: String,
+        label: 'Criado por',
+        defaultValue: '',
+        optional: true
+    },
+    createdAt: {
+        type: Date,
+        label: 'Data de Criação',
+        defaultValue: '',
+        optional: true
+    },
+    updatedAt: {
+        type: Date,
+        label: 'Data de Atualização',
+        defaultValue: '',
+        optional: true
+    }
 };

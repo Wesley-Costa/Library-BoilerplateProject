@@ -4,7 +4,7 @@ import Box, { BoxProps } from '@mui/material/Box';
 import { sysSizing } from '../../../../ui/materialui/styles';
 import { SysSectionPaddingXY } from '../../../../ui/layoutComponents/sysLayoutComponents';
 
-interface ILoanListStyles {
+interface ILoansDetailStyles {
 	Container: ElementType<BoxProps>;
 	Header: ElementType<BoxProps>;
 	Body: ElementType<BoxProps>;
@@ -12,7 +12,7 @@ interface ILoanListStyles {
 	FormColumn: ElementType<BoxProps>;
 }
 
-const LoanListStyles: ILoanListStyles = {
+const LoansDetailStyles: ILoansDetailStyles = {
 	Container: styled(SysSectionPaddingXY)(() => ({
 		display: 'flex',
 		flexDirection: 'column',
@@ -58,4 +58,4 @@ const LoanListStyles: ILoanListStyles = {
 	})
 };
 
-export default LoanListStyles;
+export default LoansDetailStyles;

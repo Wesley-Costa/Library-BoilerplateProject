@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { LoanListControllerContext } from './loanDetailController';
-import { LoanModuleContext } from '../../loanContainer';
-import LoanListStyles from './loanDetailStyles';
+import { BookListControllerContext } from './bookListController';
+import { BookModuleContext } from '../../booksContainer';
+import BookListStyles from './bookListStyles';
 import SysForm from '../../../../ui/components/sysForm/sysForm';
 import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
 import Typography from '@mui/material/Typography';
@@ -16,13 +16,13 @@ import SysSlider from '../../../../ui/components/sysFormFields/sysSlider/sysSlid
 import { SysLocationField } from '../../../../ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 
-const LoanListView = () => {
-	const controller = useContext(LoanListControllerContext);
-	const { state } = useContext(LoanModuleContext);
+const BookListView = () => {
+	const controller = useContext(BookListControllerContext);
+	const { state } = useContext(BookModuleContext);
 	const isView = state === 'view';
 	const isEdit = state === 'edit';
 	const isList = state === 'create';
-	const { Container, Body, Header, Footer, FormColumn } = LoanListStyles;
+	const { Container, Body, Header, Footer, FormColumn } = BookListStyles;
 
 	return (
 		<Container>
@@ -80,4 +80,4 @@ const LoanListView = () => {
 	);
 };
 
-export default LoanListView;
+export default BookListView;
