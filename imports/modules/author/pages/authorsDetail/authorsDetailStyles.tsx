@@ -13,19 +13,25 @@ interface IAuthorsDetailStyles {
 }
 
 const AuthorsDetailStyles: IAuthorsDetailStyles = {
-	Container: styled(SysSectionPaddingXY)(() => ({
+	Container: styled(Box)(() => ({
 		display: 'flex',
 		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
-		gap: sysSizing.spacingFixedMd
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '100%',
+		height: '100%',
+		flex: 1,
+		padding: sysSizing.spacingFixedMd,
+		boxSizing: 'border-box',
+		overflow: 'hidden'
 	})),
 	Header: styled(Box)({
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		width: '100%'
+		width: '100%',
+		marginBottom: sysSizing.spacingFixedMd
 	}),
 	Body: styled(Box)(({ theme }) => ({
 		display: 'flex',

@@ -17,13 +17,13 @@ export default (props: IDefaultContainerProps) => {
 	const state = screenState ?? props.screenState;
 	const id = authorId ?? props.id;
 
-	const validState = ['view', 'edit', 'create'];
+	const validState = ['view', 'edit', 'create'];	
 
 	const renderPage = () => {
-		if (!state || !validState.includes(state)) return <AuthorListController />;
-		if (state === 'create') return <AuthorCreateController />;
-		return <AuthorDetailController />;
-	};
+        if (state === 'create' && validState.includes(state)) return <AuthorCreateController />;
+        if (state === 'edit' && validState.includes(state)) return <AuthorDetailController />;
+        return <AuthorListController />;
+    };
 
 	const providerValue = {
 		state,

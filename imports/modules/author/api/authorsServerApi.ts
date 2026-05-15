@@ -22,6 +22,14 @@ class AuthorsServerApi extends ProductServerBase<IAuthors> {
 
 		const self = this;
 
+		this.addPublication('authors.list', function (this: any, filter = {}) {
+			return self.defaultListCollectionPublication(filter, {
+				limit: 5,
+				sort: { updatedAt: -1 },
+				projection: PROJECTION_AUTHOR
+			});
+		});
+
 		this.addPublication('authors.detail', function (this: any, filter = {}) {
 			return self.defaultDetailCollectionPublication(filter, {
 				projection: PROJECTION_AUTHOR
