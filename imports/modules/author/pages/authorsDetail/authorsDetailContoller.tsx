@@ -38,22 +38,20 @@ const AuthorsDetailController = () => {
 	}, [id]);
 
 	const closePage = useCallback(() => {
-		navigate('/');
-	}, []);
+		navigate('/authors/view');
+	}, [navigate]);
 
 	const onDelete = useCallback(() => {
 		if (id) {
 			authorsApi.remove({ _id: id }, (e: IMeteorError) => {
 				if (!e) {
-					closePage();
 					showNotification({
 						type: 'success',
 						title: 'Operação realizada!',
 						message: 'O autor foi deletado com sucesso!',
 						showCloseButton: true
 					});
-				}
-				else {
+				} else {
 					showNotification({
 						type: 'error',
 						title: 'Operação não realizada!',
@@ -61,6 +59,7 @@ const AuthorsDetailController = () => {
 						showCloseButton: true
 					});
 				}
+				closePage();
 			});
 		}
 	}, [id, closePage, showNotification]);
@@ -73,11 +72,10 @@ const AuthorsDetailController = () => {
 				...doc,
 				_id: id,
 				updatedAt: updatedAt,
-				birthDate: doc.birthDate ? new Date(doc.birthDate) : undefined
+				birthDate: doc.birthDate ? new Date(doc.birthDate) : new Date()
 			};
 			authorsApi.update(updatedDoc, (e: IMeteorError) => {
 				if (!e) {
-					closePage();
 					showNotification({
 						type: 'success',
 						title: 'Operação realizada!',
@@ -92,30 +90,29 @@ const AuthorsDetailController = () => {
 						showCloseButton: true
 					});
 				}
+				closePage();
 			});
 		},
 		[id, closePage, showNotification]
 	);
 
 	return (
-		<AuthorsDetailControllerContext.Provider
-			value={{
-				closePage,
-				document: {
-					...document,
-					_id: id,
-					birthDate: document.birthDate 
-						? new Date(document.birthDate).toISOString().split('T')[0] 
-						: undefined
-				} as IAuthors,
-				loading,
-				schema: authorsApi.getSchema(),
-				onSubmit,
-				onDelete
-			}}>
-			{<AuthorDetailView />}
-		</AuthorsDetailControllerContext.Provider>
-	);
+    <AuthorsDetailControllerContext.Provider
+        value={{
+            closePage,
+            document: {
+                ...document,
+                _id: id,
+                birthDate: document.birthDate ? new Date(document.birthDate).toISOString().split('T')[0] : ''
+            } as IAuthors,
+            loading,
+            schema: authorsApi.getSchema(),
+            onSubmit,
+            onDelete
+        }}>
+        <AuthorDetailView />
+    </AuthorsDetailControllerContext.Provider>
+);
 };
 
 export default AuthorsDetailController;

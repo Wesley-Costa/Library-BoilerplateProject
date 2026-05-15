@@ -5,9 +5,9 @@ import { Recurso } from './recursos';
 
 export const authorsMenuItemList: (IAppMenu | null)[] = [
 	{
-		path: '/authors/create',
-		name: 'Registrar Autor',
+		path: '/authors/view',
+		name: 'Autores',
 		icon: <SysIcon name={'person'} />,
-		resources: [Recurso.AUTHOR_CREATE]
+		resources: [Recurso.AUTHOR_VIEW]
 	}
 ];

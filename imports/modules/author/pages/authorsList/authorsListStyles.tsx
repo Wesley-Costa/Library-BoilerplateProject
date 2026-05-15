@@ -17,7 +17,8 @@ const AuthorsListStyles: IAuthorsListStyles = {
 		display: 'flex',
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
+		alignItems: 'stretch',
+		width: '100%',
 		gap: sysSizing.spacingFixedMd
 	})),
 	Header: styled(Box)({

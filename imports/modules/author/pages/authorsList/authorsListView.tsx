@@ -1,78 +1,91 @@
 import React, { useContext } from 'react';
 import { AuthorsListControllerContext } from './authorsListController';
-import { AuthorsModuleContext } from '../../authorsContainer';
 import AuthorListStyles from './authorsListStyles';
-import SysForm from '../../../../ui/components/sysForm/sysForm';
-import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import { SysSelectField } from '../../../../ui/components/sysFormFields/sysSelectField/sysSelectField';
-import { SysRadioButton } from '../../../../ui/components/sysFormFields/sysRadioButton/sysRadioButton';
-import { SysCheckBox } from '../../../../ui/components/sysFormFields/sysCheckBoxField/sysCheckBoxField';
-import SysFormButton from '../../../../ui/components/sysFormFields/sysFormButton/sysFormButton';
-import { SysUploadFile } from '../../../../ui/components/sysFormFields/sysUploadFile/sysUploadFile';
-import SysSlider from '../../../../ui/components/sysFormFields/sysSlider/sysSliderField';
-import { SysLocationField } from '../../../../ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
+import { IAuthors } from '../../api/authorsSch';
+import { SysFab } from '../../../../ui/components/sysFab/sysFab';
+import { Box, Typography, Stack, Tooltip } from '@mui/material';
+import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 const AuthorsListView = () => {
 	const controller = useContext(AuthorsListControllerContext);
-	const { state } = useContext(AuthorsModuleContext);
-	const isView = state === 'view';
-	const isEdit = state === 'edit';
-	const isList = state === 'create';
-	const { Container, Body, Header, Footer, FormColumn } = AuthorListStyles;
+	const { Container, Header } = AuthorListStyles;
+
+	const renderAuthorsList = (author: IAuthors) => {
+		return (
+			<Box
+				key={author._id}
+				sx={{
+					display: 'flex',
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					width: '100%',
+					padding: 2,
+					borderRadius: 2,
+					backgroundColor: '#ffffff',
+					boxShadow: 1
+				}}>
+				<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+					<Typography variant="h6" fontWeight={600}>
+						{author.name}
+					</Typography>
+					<Stack>
+						<Typography variant="body2" color="textSecondary">
+							Nacionalidade: {author.nationality}
+						</Typography>
+
+						<Typography variant="body2" color="textSecondary">
+							Data de Nascimento: {controller.formatDate(author.birthDate)}
+						</Typography>
+					</Stack>
+				</Box>
+
+				<Stack direction="row" spacing={1}>
+					<Tooltip title="Editar">
+						<SysButton
+							variant="contained"
+							startIcon={<SysIcon name="edit" />}
+							color="primary"
+							onClick={(e: React.MouseEvent) => {
+								e.stopPropagation();
+								controller.onEditAuthor(author);
+							}}
+						/>
+					</Tooltip>
+
+					<Tooltip title="Excluir">
+						<SysButton
+							variant="outlined"
+							startIcon={<SysIcon name="delete" color="error" />}
+							onClick={(e: React.MouseEvent) => {
+								e.stopPropagation();
+								controller.onDeleteAuthor(author);
+							}}
+						/>
+					</Tooltip>
+				</Stack>
+			</Box>
+		);
+	};
 
 	return (
 		<Container>
 			<Header>
-				{isView && (
-					<IconButton onClick={controller.closePage}>
-						<SysIcon name={'arrowBack'} />
-					</IconButton>
-				)}
-				<IconButton
-					onClick={!isView ? controller.closePage : () => controller.changeToEdit(controller.document._id || '')}>
-					{!isView ? <SysIcon name={'close'} /> : <SysIcon name={'edit'} />}
-				</IconButton>
+				<Typography variant="h5" fontWeight={600}>
+					Autores
+				</Typography>
+				<SysFab
+					variant="extended"
+					startIcon={<SysIcon name="add" />}
+					text="Registrar Autor"
+					onClick={controller.onAddAuthor}
+				/>
 			</Header>
-			<SysForm
-				mode={state as 'create' | 'view' | 'edit'}
-				schema={controller.schema}
-				doc={controller.document}
-				onSubmit={controller.onSubmit}
-				loading={controller.loading}>
-				<Body>
-					<FormColumn>
-						<SysTextField name="title" placeholder="Ex.: Item XX" />
-						<SysSelectField name="type" placeholder="Selecionar" />
-						<SysRadioButton name="typeMulti" childrenAlignment="row" size="small" />
-						<SysTextField
-							name="description"
-							placeholder="Acrescente informações sobre o item (3 linhas)"
-							multiline
-							rows={3}
-							showNumberCharactersTyped
-							max={200}
-						/>
-						<SysUploadFile name="files" />
-						<SysSlider name="slider" />
-						<SysLocationField name="address" />
-					</FormColumn>
-					<FormColumn>
-						<SysCheckBox name="check" childrenAlignment="row" />
-					</FormColumn>
-				</Body>
-				<Footer>
-					{!isView && (
-						<Button variant="outlined" startIcon={<SysIcon name={'close'} />} onClick={controller.closePage}>
-							Cancelar
-						</Button>
-					)}
-					<SysFormButton>Salvar</SysFormButton>
-				</Footer>
-			</SysForm>
+
+			<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}>
+				{controller.authorsList.map(renderAuthorsList)}
+			</Box>
 		</Container>
 	);
 };

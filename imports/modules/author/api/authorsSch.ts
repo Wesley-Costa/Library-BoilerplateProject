@@ -6,7 +6,7 @@ export interface IAuthors extends IDoc {
     nationality: string;
     birthDate: Date;
     biography: string;
-    createdBy: string | null;
+    createdBy: string;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -24,7 +24,7 @@ const AuthorsCreateController = () => {
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
 	const closePage = useCallback(() => {
-		navigate('/');
+		navigate('/authors/view');
 	}, []);
 
 	const onSubmit = useCallback(
@@ -38,7 +38,7 @@ const AuthorsCreateController = () => {
 				createdBy: user,
 				createdAt: createdAt,
 				updatedAt: updatedAt,
-				birthDate: doc.birthDate ? new Date(doc.birthDate) : undefined
+				birthDate: new Date(doc.birthDate)
 			};
 
 			authorsApi.insert(enrichedDoc, (e: IMeteorError) => {
