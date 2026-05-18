@@ -1,19 +1,19 @@
 import React, { useContext } from 'react';
-import { AuthorsListControllerContext } from './authorsListController';
-import AuthorListStyles from './authorsListStyles';
-import { IAuthors } from '../../api/authorsSch';
+import { LoansListControllerContext } from './loansListController';
+import { ILoans } from '../../api/loansSch';
+import LoanListStyles from './loansListStyles';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
 import { Box, Typography, Stack, Tooltip } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
-const AuthorsListView = () => {
-	const controller = useContext(AuthorsListControllerContext);
-	const { Container, Header, Body, Footer } = AuthorListStyles;
+const LoanListView = () => {
+	const controller = useContext(LoansListControllerContext);
+	const { Container, Header, Body, Footer } = LoanListStyles;
 
-	const renderAuthorCard = (author: IAuthors) => (
+	const renderLoanCard = (loan: ILoans) => (
 		<Box
-			key={author._id}
+			key={loan._id}
 			sx={{
 				display: 'flex',
 				flexDirection: 'row',
@@ -27,14 +27,14 @@ const AuthorsListView = () => {
 			}}>
 			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 				<Typography variant="h6" fontWeight={600}>
-					{author.name}
+					Data de Registro: {controller.formatDate(loan.loanDate)}
 				</Typography>
 				<Stack>
 					<Typography variant="body2" color="textSecondary">
-						Nacionalidade: {author.nationality}
+						Quantidade de livros: {loan.borrowedVolumes}
 					</Typography>
 					<Typography variant="body2" color="textSecondary">
-						Data de Nascimento: {controller.formatDate(author.birthDate)}
+						Data de Devolução: {controller.formatDate(loan.returnDate)}
 					</Typography>
 				</Stack>
 			</Box>
@@ -47,7 +47,7 @@ const AuthorsListView = () => {
 						color="primary"
 						onClick={(e: React.MouseEvent) => {
 							e.stopPropagation();
-							controller.onEditAuthor(author);
+							controller.onEditLoan(loan);
 						}}
 					/>
 				</Tooltip>
@@ -58,7 +58,7 @@ const AuthorsListView = () => {
 						startIcon={<SysIcon name="delete" color="error" />}
 						onClick={(e: React.MouseEvent) => {
 							e.stopPropagation();
-							controller.onDeleteAuthor(author);
+							controller.onDeleteLoan(loan);
 						}}
 					/>
 				</Tooltip>
@@ -70,18 +70,18 @@ const AuthorsListView = () => {
 		<Container>
 			<Header>
 				<Typography variant="h5" fontWeight={600}>
-					Autores
+					Empréstimos
 				</Typography>
 				<SysFab
 					variant="extended"
 					startIcon={<SysIcon name="add" />}
-					text="Registrar Autor"
-					onClick={controller.onAddAuthor}
+					text="Registrar Empréstimo"
+					onClick={controller.onAddLoan}
 				/>
 			</Header>
 
 			<Body>
-				{controller.authorsList.map(renderAuthorCard)}
+				{controller.loansList.map(renderLoanCard)}
 			</Body>
 
 			<Footer />
@@ -89,4 +89,4 @@ const AuthorsListView = () => {
 	);
 };
 
-export default AuthorsListView;
+export default LoanListView;

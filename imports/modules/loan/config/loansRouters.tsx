@@ -4,16 +4,10 @@ import { IRoute } from '../../modulesTypings';
 
 export const loansRouterList: (IRoute | null)[] = [
 	{
-		path: '/loans',
-		component: loansContainer,
-		isProtected: true,
-		resources: [Recurso.LOAN_VIEW]
-	},
-	{
 		path: '/loans/:screenState',
 		component: loansContainer,
 		isProtected: true,
-		resources: [Recurso.LOAN_CREATE]
+		resources: [Recurso.LOAN_VIEW, Recurso.LOAN_CREATE]
 	},
 	{
 		path: '/loans/:screenState/:loanId',

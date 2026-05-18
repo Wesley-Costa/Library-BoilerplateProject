@@ -3,7 +3,7 @@ import { IDefaultContainerProps } from '../../typings/BoilerplateDefaultTypings'
 import { useParams } from 'react-router-dom';
 import BooksCreateController from './pages/booksCreate/booksCreateController';
 import BooksDetailController from './pages/booksDetail/booksDetailController';
-import BooksListController from './pages/booksList/bookListController';
+import BooksListController from './pages/booksList/booksListController';
 
 export interface IBooksModuleContext {
 	state?: string;
@@ -16,16 +16,13 @@ export default (props: IDefaultContainerProps) => {
 	let { screenState, bookId } = useParams();
 	const state = screenState ?? props.screenState;
 	const id = bookId ?? props.id;
-
-	const validState = ['view', 'edit', 'create'];
-
-	console.log('BooksContainer - screenState:', state, 'bookId:', id);
+	const validState = ['view', 'edit', 'create'];	
 
 	const renderPage = () => {
-		if (!state || !validState.includes(state)) return <BooksListController />;
-		if (state === 'create') return <BooksCreateController />;
-		return <BooksDetailController />;
-	};
+        if (state === 'create' && validState.includes(state)) return <BooksCreateController />;
+        if (state === 'edit' && validState.includes(state)) return <BooksDetailController />;
+        return <BooksListController />;
+    };
 
 	const providerValue = {
 		state,

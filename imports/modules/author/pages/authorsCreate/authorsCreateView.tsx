@@ -14,49 +14,33 @@ const AuthorsCreateView = () => {
 
 	return (
 		<Container>
-			<Box
-				sx={{
-					width: '100%',
-					maxWidth: 600,
-					backgroundColor: '#ffffff',
-					borderRadius: 2,
-					boxShadow: 3,
-					p: 4,
-					boxSizing: 'border-box'
-				}}>
-				<Header>
-					<Typography variant="h5" fontWeight={600}>
-						Adicionar Autor
-					</Typography>
-				</Header>
+			<Header>
+				<Typography variant="h5" fontWeight={600}>
+					Adicionar Autor
+				</Typography>
+			</Header>
 
-				<SysForm
-					mode="create"
-					schema={controller.schema}
-					doc={controller.document}
-					onSubmit={controller.onSubmit}>
-					<Body>
-						<FormColumn>
-							<SysTextField name="name" placeholder="Nome do autor" />
-							<SysTextField name="nationality" placeholder="Nacionalidade do autor" />
-							<SysTextField name="biography" placeholder="Biografia do autor" multiline rows={4} />
-							<SysTextField
-								name="birthDate"
-								placeholder="Data de nascimento do autor"
-								type="date"
-								InputLabelProps={{ shrink: true }}
-							/>
-						</FormColumn>
-					</Body>
-
-					<Footer>
-						<SysButton variant="outlined" startIcon={<SysIcon name="close" />} onClick={controller.closePage}>
-							Cancelar
-						</SysButton>
-						<SysFormButton>Salvar</SysFormButton>
-					</Footer>
-				</SysForm>
-			</Box>
+			<SysForm mode="create" schema={controller.schema} doc={controller.document} onSubmit={controller.onSubmit}>
+				<Body>
+					<FormColumn>
+						<SysTextField name="name" placeholder="Nome do autor" />
+						<SysTextField name="nationality" placeholder="Nacionalidade do autor" />
+						<SysTextField name="biography" placeholder="Biografia do autor" multiline rows={4} />
+						<SysTextField
+							name="birthDate"
+							placeholder="Data de nascimento do autor"
+							type="date"
+							InputLabelProps={{ shrink: true }}
+						/>
+					</FormColumn>
+				</Body>
+				<Footer>
+					<SysButton variant="outlined" startIcon={<SysIcon name="close" />} onClick={controller.closePage}>
+						Cancelar
+					</SysButton>
+					<SysFormButton>Salvar</SysFormButton>
+				</Footer>
+			</SysForm>
 		</Container>
 	);
 };

@@ -4,7 +4,7 @@ import Box, { BoxProps } from '@mui/material/Box';
 import { sysSizing } from '../../../../ui/materialui/styles';
 import { SysSectionPaddingXY } from '../../../../ui/layoutComponents/sysLayoutComponents';
 
-interface ILoanListStyles {
+interface IBookListStyles {
 	Container: ElementType<BoxProps>;
 	Header: ElementType<BoxProps>;
 	Body: ElementType<BoxProps>;
@@ -12,30 +12,35 @@ interface ILoanListStyles {
 	FormColumn: ElementType<BoxProps>;
 }
 
-const LoanListStyles: ILoanListStyles = {
+const BookListStyles: IBookListStyles = {
 	Container: styled(SysSectionPaddingXY)(() => ({
+		flex: 1,
 		display: 'flex',
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
-		gap: sysSizing.spacingFixedMd
+		alignItems: 'center',
+		width: '100%',
+		height: '100%',
+		boxSizing: 'border-box',
+		overflowY: 'auto'
 	})),
 	Header: styled(Box)({
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		width: '100%'
+		width: '100%',
+		maxWidth: 720,
+		marginBottom: sysSizing.spacingFixedMd
 	}),
 	Body: styled(Box)(({ theme }) => ({
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
 		width: '100%',
-		gap: '64px',
+		maxWidth: 720,
 		[theme.breakpoints.down('md')]: {
-			flexDirection: 'column',
 			gap: sysSizing.spacingFixedMd
 		}
 	})),
@@ -45,8 +50,9 @@ const LoanListStyles: ILoanListStyles = {
 		justifyContent: 'flex-end',
 		alignItems: 'center',
 		width: '100%',
+		maxWidth: 720,
 		gap: sysSizing.spacingRemMd,
-		marginTop: '40px'
+		marginTop: sysSizing.spacingFixedMd
 	}),
 	FormColumn: styled(Box)({
 		width: '100%',
@@ -54,8 +60,8 @@ const LoanListStyles: ILoanListStyles = {
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		gap: sysSizing.spacingFixedLg
+		gap: sysSizing.spacingFixedMd
 	})
 };
 
-export default LoanListStyles;
+export default BookListStyles;

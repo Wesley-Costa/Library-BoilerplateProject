@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { LoansCreateControllerContext } from './loanCreateController';
-import LoanListStyles from './loanCreateStyles';
+import { LoansCreateControllerContext } from './loansCreateController';
+import LoanListStyles from './loansCreateStyles';
 import SysForm from '../../../../ui/components/sysForm/sysForm';
 import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
 import Typography from '@mui/material/Typography';

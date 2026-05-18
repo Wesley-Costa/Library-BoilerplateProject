@@ -5,9 +5,9 @@ import { Recurso } from './recursos';
 
 export const booksMenuItemList: (IAppMenu | null)[] = [
 	{
-		path: '/books/create',
-		name: 'Registrar Livro',
+		path: '/books/view',
+		name: 'Livros',
 		icon: <SysIcon name={'book'} />,
-		resources: [Recurso.BOOK_CREATE]
+		resources: [Recurso.BOOK_VIEW]
 	}
 ];

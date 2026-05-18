@@ -1,9 +1,9 @@
 import React from 'react';
 import { IDefaultContainerProps } from '../../typings/BoilerplateDefaultTypings';
 import { useParams } from 'react-router-dom';
-import LoansListController from './pages/loanList/loanListController';
-import LoansDetailController from './pages/loanDetail/loansDetailController';
-import LoansCreateController from './pages/loanCreate/loanCreateController';
+import LoansListController from './pages/loansList/loansListController';
+import LoansDetailController from './pages/loansDetail/loansDetailController';
+import LoansCreateController from './pages/loansCreate/loansCreateController';
 
 export interface ILoansModuleContext {
 	state?: string;
@@ -20,10 +20,10 @@ export default (props: IDefaultContainerProps) => {
 	const validState = ['view', 'edit', 'create'];
 
 	const renderPage = () => {
-		if (!state || !validState.includes(state)) return <LoansListController />;
-		if (state === 'create') return <LoansCreateController />;
-		return <LoansDetailController />;
-	};
+        if (state === 'create' && validState.includes(state)) return <LoansCreateController />;
+        if (state === 'edit' && validState.includes(state)) return <LoansDetailController />;
+        return <LoansListController />;
+    };
 
 	const providerValue = {
 		state,

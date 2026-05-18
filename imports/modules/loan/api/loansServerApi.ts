@@ -1,7 +1,6 @@
 // region Imports
 import { Recurso } from '../config/recursos';
 import { loansSch, ILoans } from './loansSch';
-import { userprofileServerApi } from '../../userprofile/api/userProfileServerApi';
 import { ProductServerBase } from '../../../api/productServerBase';
 
 // endregion
@@ -23,6 +22,14 @@ class LoanServerApi extends ProductServerBase<ILoans> {
 		});
 
 		const self = this;
+
+		this.addPublication('loans.list', function (this: any, filter = {}) {
+			return self.defaultListCollectionPublication(filter, {
+				limit: 5,
+				sort: { updatedAt: -1 },
+				projection: PROJECTION_LOAN
+			});
+		});
 
 		this.addPublication('loans.detail', function (this: any, filter = {}) {
 			return self.defaultDetailCollectionPublication(filter, {
