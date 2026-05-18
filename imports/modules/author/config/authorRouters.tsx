@@ -7,13 +7,7 @@ export const authorsRouterList: (IRoute | null)[] = [
 		path: '/authors/:screenState',
 		component: AuthorsContainer,
 		isProtected: true,
-		resources: [Recurso.AUTHOR_VIEW]
-	},
-	{
-		path: '/authors/:screenState',
-		component: AuthorsContainer,
-		isProtected: true,
-		resources: [Recurso.AUTHOR_CREATE]
+		resources: [Recurso.AUTHOR_VIEW, Recurso.AUTHOR_CREATE]
 	},
 	{
 		path: '/authors/:screenState/:authorId',

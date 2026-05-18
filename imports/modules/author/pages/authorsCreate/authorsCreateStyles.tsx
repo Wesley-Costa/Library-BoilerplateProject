@@ -2,6 +2,7 @@ import { ElementType } from 'react';
 import { styled } from '@mui/material/styles';
 import Box, { BoxProps } from '@mui/material/Box';
 import { sysSizing } from '../../../../ui/materialui/styles';
+import {SysSectionPaddingXY} from "/imports/ui/layoutComponents/sysLayoutComponents";
 
 interface IAuthorsCreateStyles {
 	Container: ElementType<BoxProps>;
@@ -12,17 +13,16 @@ interface IAuthorsCreateStyles {
 }
 
 const AuthorsCreateStyles: IAuthorsCreateStyles = {
-	Container: styled(Box)(() => ({
+	Container: styled(SysSectionPaddingXY)(() => ({
+		flex: 1,
 		display: 'flex',
 		flexDirection: 'column',
-		justifyContent: 'center',
+		justifyContent: 'flex-start',
 		alignItems: 'center',
 		width: '100%',
 		height: '100%',
-		flex: 1,
-		padding: sysSizing.spacingFixedMd,
 		boxSizing: 'border-box',
-		overflow: 'hidden'
+		overflowY: 'auto'
 	})),
 	Header: styled(Box)({
 		display: 'flex',
@@ -30,17 +30,17 @@ const AuthorsCreateStyles: IAuthorsCreateStyles = {
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		width: '100%',
+		maxWidth: 720,
 		marginBottom: sysSizing.spacingFixedMd
 	}),
 	Body: styled(Box)(({ theme }) => ({
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: 'column',
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
 		width: '100%',
-		gap: '64px',
+		maxWidth: 720,
 		[theme.breakpoints.down('md')]: {
-			flexDirection: 'column',
 			gap: sysSizing.spacingFixedMd
 		}
 	})),
@@ -50,8 +50,9 @@ const AuthorsCreateStyles: IAuthorsCreateStyles = {
 		justifyContent: 'flex-end',
 		alignItems: 'center',
 		width: '100%',
+		maxWidth: 720,
 		gap: sysSizing.spacingRemMd,
-		marginTop: '40px'
+		marginTop: sysSizing.spacingFixedMd
 	}),
 	FormColumn: styled(Box)({
 		width: '100%',
@@ -59,7 +60,7 @@ const AuthorsCreateStyles: IAuthorsCreateStyles = {
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
-		gap: sysSizing.spacingFixedLg
+		gap: sysSizing.spacingFixedMd
 	})
 };
 

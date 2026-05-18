@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import LoansCreateView from './loanCreateView';
+import LoansCreateView from './loansCreateView';
 import { useNavigate } from 'react-router-dom';
 import { loansApi } from '../../api/loansApi';
 import { ILoans } from '../../api/loansSch';

@@ -1,11 +1,11 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import AuthorsListView from './authorsListView';
-import { useNavigate } from 'react-router-dom';
-import { useTracker } from 'meteor/react-meteor-data';
-import { authorsApi } from '../../api/authorsApi';
-import { IAuthors } from '../../api/authorsSch';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import { IMeteorError } from '../../../../typings/IMeteorError';
+import { useTracker } from 'meteor/react-meteor-data';
+import { useNavigate } from 'react-router-dom';
+import AuthorsListView from './authorsListView';
+import { authorsApi } from '../../api/authorsApi';
+import { IAuthors } from '../../api/authorsSch';
 
 interface IAuthorsListContollerContext {
 	authors: IAuthors[];

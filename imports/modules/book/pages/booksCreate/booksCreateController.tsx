@@ -22,7 +22,7 @@ const BooksCreateController = () => {
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
 	const closePage = useCallback(() => {
-		navigate('/');
+		navigate('/books/view');
 	}, []);
 
 	const onSubmit = useCallback(

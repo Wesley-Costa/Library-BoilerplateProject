@@ -23,6 +23,14 @@ class BooksServerApi extends ProductServerBase<IBooks> {
 
 		const self = this;
 
+		this.addPublication('books.list', function (this: any, filter = {}) {
+			return self.defaultListCollectionPublication(filter, {
+				limit: 5,
+				sort: { updatedAt: -1 },
+				projection: PROJECTION_BOOK
+			});
+		});
+
 		this.addPublication('books.detail', function (this: any, filter = {}) {
 			return self.defaultDetailCollectionPublication(filter, {
 				projection: PROJECTION_BOOK

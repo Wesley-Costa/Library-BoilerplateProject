@@ -1,19 +1,20 @@
 import React, { useContext } from 'react';
-import { AuthorsListControllerContext } from './authorsListController';
-import AuthorListStyles from './authorsListStyles';
-import { IAuthors } from '../../api/authorsSch';
+import { BooksListControllerContext } from './booksListController';
+import BookListStyles from './booksListStyles';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
+import { IBooks } from '../../api/booksSch';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
 import { Box, Typography, Stack, Tooltip } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
-const AuthorsListView = () => {
-	const controller = useContext(AuthorsListControllerContext);
-	const { Container, Header, Body, Footer } = AuthorListStyles;
 
-	const renderAuthorCard = (author: IAuthors) => (
+const BooksListView = () => {
+	const controller = useContext(BooksListControllerContext);
+	const { Container, Header, Body, Footer } = BookListStyles;
+
+	const renderBookCard = (book: IBooks) => (
 		<Box
-			key={author._id}
+			key={book._id}
 			sx={{
 				display: 'flex',
 				flexDirection: 'row',
@@ -27,14 +28,11 @@ const AuthorsListView = () => {
 			}}>
 			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 				<Typography variant="h6" fontWeight={600}>
-					{author.name}
+					{book.title}
 				</Typography>
 				<Stack>
 					<Typography variant="body2" color="textSecondary">
-						Nacionalidade: {author.nationality}
-					</Typography>
-					<Typography variant="body2" color="textSecondary">
-						Data de Nascimento: {controller.formatDate(author.birthDate)}
+						Categoria: {book.category}
 					</Typography>
 				</Stack>
 			</Box>
@@ -47,7 +45,7 @@ const AuthorsListView = () => {
 						color="primary"
 						onClick={(e: React.MouseEvent) => {
 							e.stopPropagation();
-							controller.onEditAuthor(author);
+							controller.onEditBook(book);
 						}}
 					/>
 				</Tooltip>
@@ -58,7 +56,7 @@ const AuthorsListView = () => {
 						startIcon={<SysIcon name="delete" color="error" />}
 						onClick={(e: React.MouseEvent) => {
 							e.stopPropagation();
-							controller.onDeleteAuthor(author);
+							controller.onDeleteBook(book);
 						}}
 					/>
 				</Tooltip>
@@ -70,18 +68,18 @@ const AuthorsListView = () => {
 		<Container>
 			<Header>
 				<Typography variant="h5" fontWeight={600}>
-					Autores
+					Livros
 				</Typography>
 				<SysFab
 					variant="extended"
 					startIcon={<SysIcon name="add" />}
-					text="Registrar Autor"
-					onClick={controller.onAddAuthor}
+					text="Registrar Livro"
+					onClick={controller.onAddBook}
 				/>
 			</Header>
 
 			<Body>
-				{controller.authorsList.map(renderAuthorCard)}
+				{controller.booksList.map(renderBookCard)}
 			</Body>
 
 			<Footer />
@@ -89,4 +87,4 @@ const AuthorsListView = () => {
 	);
 };
 
-export default AuthorsListView;
+export default BooksListView;
