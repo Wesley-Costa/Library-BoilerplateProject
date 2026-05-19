@@ -22,12 +22,15 @@ class AuthorsServerApi extends ProductServerBase<IAuthors> {
 
 		const self = this;
 
-		this.addPublication('authors.list', function (this: any, filter = {}) {
-			return self.defaultListCollectionPublication(filter, {
-				limit: 5,
-				sort: { updatedAt: -1 },
+		this.addPublication('authors.list', function (this: any, filter = {}, options = {}) {
+			const defOptions = {
+				sort: { name: 1 },
 				projection: PROJECTION_AUTHOR
-			});
+			};
+
+			const finalOptions = { ...defOptions, ...options };
+
+			return self.defaultListCollectionPublication(filter, finalOptions);
 		});
 
 		this.addPublication('authors.detail', function (this: any, filter = {}) {
