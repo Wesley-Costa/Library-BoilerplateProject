@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import { IMeteorError } from '../../../../typings/IMeteorError';
 import { useTracker } from 'meteor/react-meteor-data';
@@ -12,11 +12,17 @@ interface IAuthorsListContollerContext {
 	loading: boolean;
 	authorsTotal: number;
 	loadingAuthors: boolean;
+	loadingAuthorsPage: boolean;
 	authorsList: IAuthors[];
+	authorsPage: number;
+	totalPages: number;
+
 	formatDate: (date: string | Date) => string;
 	onEditAuthor: (author: IAuthors) => void;
 	onAddAuthor: () => void;
 	onDeleteAuthor: (author: IAuthors) => void;
+	onNextPage: () => void;
+	onPrevPage: () => void;
 }
 
 export const AuthorsListControllerContext = createContext<IAuthorsListContollerContext>(
@@ -24,31 +30,54 @@ export const AuthorsListControllerContext = createContext<IAuthorsListContollerC
 );
 
 const AuthorsListController = () => {
+	const PAGE_SIZE = 5;
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
+	const [authorsPage, setAuthorsPage] = React.useState(1);
+	const [visibleAuthors, setVisibleAuthors] = React.useState<IAuthors[]>([]);
 
-	const formatDate = (date: string | Date) => {
+	const formatDate = useCallback((date: string | Date) => {
 		if (!date) return '-';
 		const d = new Date(date);
 		return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-	};
+	}, []);
 
 	const {
 		authors: authorsList,
 		loading: loadingAuthors,
 		total: authorsTotal
 	} = useTracker(() => {
-		const subHandle = authorsApi.subscribe('authors.list') ?? null;
+		const skip = (authorsPage - 1) * PAGE_SIZE;
+		const filter = {};
+
+		const subHandle = authorsApi.subscribe('authors.list', filter, { skip: skip, limit: PAGE_SIZE }) ?? null;
 		const isReady = !!subHandle && subHandle.ready();
-		const authors = isReady ? authorsApi.find({}).fetch() : [];
-		const totalAuthors = authorsApi.counts.findOne({ _id: 'authors.authorsTotal' })?.count ?? 0;
+
+		const authors = isReady ? authorsApi.find(filter, { sort: { name: 1 } }).fetch(): [];
+
+		const totalAuthors = authorsApi.counts.findOne({ _id: 'authors.listTotal' })?.count ?? 0;
 
 		return {
 			authors,
 			loading: !isReady,
 			total: totalAuthors
 		};
-	}, []);
+	}, [authorsPage]);
+
+	useEffect(() => {
+		if (!loadingAuthors) {
+			setVisibleAuthors(authorsList);
+		}
+	}, [loadingAuthors, authorsList]);
+
+	useEffect(() => {
+		const totalPages = Math.max(1, Math.ceil((authorsTotal || 0) / PAGE_SIZE));
+		if (authorsPage > totalPages && totalPages > 0) {
+			setAuthorsPage(totalPages);
+		}
+	}, [authorsPage, authorsTotal]);
+
+	const totalPages = Math.max(1, Math.ceil((authorsTotal || 0) / PAGE_SIZE));
 
 	const onEditAuthor = useCallback(
 		(author: IAuthors) => {
@@ -86,19 +115,48 @@ const AuthorsListController = () => {
 		[showNotification]
 	);
 
+	const onNextPage = useCallback(() => {
+		if (authorsPage < totalPages) {
+			setAuthorsPage(authorsPage + 1);
+		}
+	}, [authorsPage, totalPages]);
+
+	const onPrevPage = useCallback(() => {
+		if (authorsPage > 1) {
+			setAuthorsPage(authorsPage - 1);
+		}
+	}, [authorsPage]);
+
 	const providerValues: IAuthorsListContollerContext = useMemo(
 		() => ({
-			authors: authorsList,
-			loading: loadingAuthors,
+			authors: visibleAuthors,
+			loading: loadingAuthors && visibleAuthors.length === 0,
 			authorsTotal,
 			loadingAuthors,
-			authorsList,
+			loadingAuthorsPage: loadingAuthors,
+			authorsList: visibleAuthors,
+			authorsPage,
+			totalPages,
 			onEditAuthor,
 			onAddAuthor,
 			onDeleteAuthor,
+			onNextPage,
+			onPrevPage,
 			formatDate
 		}),
-		[authorsList, loadingAuthors, authorsTotal, onEditAuthor, onAddAuthor, onDeleteAuthor]
+		[
+			visibleAuthors,
+			loadingAuthors,
+			authorsTotal,
+			totalPages,
+			authorsPage,
+			onEditAuthor,
+			onAddAuthor,
+			onDeleteAuthor,
+			onNextPage,
+			onPrevPage,
+			formatDate
+		]
 	);
 
 	return (

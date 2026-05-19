@@ -4,7 +4,7 @@ import AuthorListStyles from './authorsListStyles';
 import { IAuthors } from '../../api/authorsSch';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
-import { Box, Typography, Stack, Tooltip } from '@mui/material';
+import { Box, Typography, Stack, Tooltip, IconButton } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 const AuthorsListView = () => {
@@ -66,6 +66,24 @@ const AuthorsListView = () => {
 		</Box>
 	);
 
+	const renderPagination = () => {
+		return (
+			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+				<IconButton onClick={controller.onPrevPage} disabled={controller.authorsPage === 1}>
+					<SysIcon name="chevronLeft" />
+				</IconButton>
+
+				<Typography variant="body2">
+					Página {controller.authorsPage} de {controller.totalPages}
+				</Typography>
+
+				<IconButton onClick={controller.onNextPage} disabled={controller.authorsPage === controller.totalPages}>
+					<SysIcon name="chevronRight" />
+				</IconButton>
+			</Box>
+		);
+	};
+
 	return (
 		<Container>
 			<Header>
@@ -80,11 +98,11 @@ const AuthorsListView = () => {
 				/>
 			</Header>
 
-			<Body>
-				{controller.authorsList.map(renderAuthorCard)}
-			</Body>
+			<Body>{controller.authorsList.map(renderAuthorCard)}</Body>
 
-			<Footer />
+			<Footer>
+				{renderPagination()}
+			</Footer>
 		</Container>
 	);
 };
