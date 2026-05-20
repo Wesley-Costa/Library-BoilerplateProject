@@ -4,7 +4,7 @@ import AuthorListStyles from './authorsListStyles';
 import { IAuthors } from '../../api/authorsSch';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
-import { Box, Typography, Stack, Tooltip, IconButton } from '@mui/material';
+import { Box, Typography, Stack, Tooltip, IconButton, CircularProgress } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 const AuthorsListView = () => {
@@ -21,7 +21,8 @@ const AuthorsListView = () => {
 				alignItems: 'center',
 				width: '100%',
 				padding: 2,
-				borderRadius: 2,
+				borderRadius: 3,
+				marginBottom: 2,
 				backgroundColor: '#ffffff',
 				boxShadow: 1
 			}}>
@@ -98,10 +99,23 @@ const AuthorsListView = () => {
 				/>
 			</Header>
 
-			<Body>{controller.authorsList.map(renderAuthorCard)}</Body>
+			<Body>
+				{controller.loading && controller.authorsList.length === 0 ? (
+					<Box display="flex" alignItems="center" justifyContent="center" py={4} gap={2}>
+						<CircularProgress size={24} />
+						<Typography variant="body1">Carregando autores...</Typography>
+					</Box>
+				) : controller.authorsList.length === 0 ? (
+					<Box display="flex" alignItems="center" justifyContent="center" py={4}>
+						<Typography variant="body1">Nenhum autor encontrado.</Typography>
+					</Box>
+				) : (
+					controller.authorsList.map(renderAuthorCard)
+				)}
+			</Body>
 
 			<Footer>
-				{renderPagination()}
+				{controller.totalPages > 1 && renderPagination()}
 			</Footer>
 		</Container>
 	);

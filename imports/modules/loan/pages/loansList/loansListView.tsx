@@ -4,7 +4,7 @@ import { ILoans } from '../../api/loansSch';
 import LoanListStyles from './loansListStyles';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
-import { Box, Typography, Stack, Tooltip } from '@mui/material';
+import { Box, Typography, Stack, Tooltip, IconButton, CircularProgress } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 const LoanListView = () => {
@@ -21,7 +21,8 @@ const LoanListView = () => {
 				alignItems: 'center',
 				width: '100%',
 				padding: 2,
-				borderRadius: 2,
+				borderRadius: 3,
+				marginBottom: 2,
 				backgroundColor: '#ffffff',
 				boxShadow: 1
 			}}>
@@ -66,6 +67,24 @@ const LoanListView = () => {
 		</Box>
 	);
 
+	const renderPagination = () => {
+		return (
+			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+				<IconButton onClick={controller.onPrevPage} disabled={controller.loansPage === 1}>
+					<SysIcon name="chevronLeft" />
+				</IconButton>
+
+				<Typography variant="body2">
+					Página {controller.loansPage} de {controller.totalPages}
+				</Typography>
+
+				<IconButton onClick={controller.onNextPage} disabled={controller.loansPage === controller.totalPages}>
+					<SysIcon name="chevronRight" />
+				</IconButton>
+			</Box>
+		);
+	};
+
 	return (
 		<Container>
 			<Header>
@@ -81,10 +100,22 @@ const LoanListView = () => {
 			</Header>
 
 			<Body>
-				{controller.loansList.map(renderLoanCard)}
+				{controller.loading && controller.loansList.length === 0 ? (
+					<Box display="flex" alignItems="center" justifyContent="center" py={4} gap={2}>
+						<CircularProgress size={24} />
+						<Typography variant="body1">Carregando empréstimos...</Typography>
+					</Box>
+				) : controller.loansList.length === 0 ? (
+					<Box display="flex" alignItems="center" justifyContent="center" py={4}>
+						<Typography variant="body1">Nenhum empréstimo encontrado.</Typography>
+					</Box>
+				) : (
+					controller.loansList.map(renderLoanCard)
+				)}
 			</Body>
-
-			<Footer />
+			<Footer>
+				{controller.totalPages > 1 && renderPagination()}
+			</Footer>
 		</Container>
 	);
 };
