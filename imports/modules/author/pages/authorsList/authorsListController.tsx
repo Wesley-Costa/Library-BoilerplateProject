@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import { IMeteorError } from '../../../../typings/IMeteorError';
 import { useTracker } from 'meteor/react-meteor-data';
@@ -33,8 +33,8 @@ const AuthorsListController = () => {
 	const PAGE_SIZE = 5;
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
-	const [authorsPage, setAuthorsPage] = React.useState(1);
-	const [visibleAuthors, setVisibleAuthors] = React.useState<IAuthors[]>([]);
+	const [authorsPage, setAuthorsPage] = useState(1);
+	const [visibleAuthors, setVisibleAuthors] = useState<IAuthors[]>([]);
 
 	const formatDate = useCallback((date: string | Date) => {
 		if (!date) return '-';
@@ -53,7 +53,7 @@ const AuthorsListController = () => {
 		const subHandle = authorsApi.subscribe('authors.list', filter, { skip: skip, limit: PAGE_SIZE }) ?? null;
 		const isReady = !!subHandle && subHandle.ready();
 
-		const authors = isReady ? authorsApi.find(filter, { sort: { name: 1 } }).fetch(): [];
+		const authors = isReady ? authorsApi.find(filter, { sort: { name: 1 } }).fetch() : [];
 
 		const totalAuthors = authorsApi.counts.findOne({ _id: 'authors.listTotal' })?.count ?? 0;
 

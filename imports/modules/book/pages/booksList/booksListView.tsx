@@ -4,7 +4,7 @@ import BookListStyles from './booksListStyles';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import { IBooks } from '../../api/booksSch';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
-import { Box, Typography, Stack, Tooltip } from '@mui/material';
+import { Box, Typography, Stack, Tooltip, IconButton, CircularProgress } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 
@@ -22,7 +22,8 @@ const BooksListView = () => {
 				alignItems: 'center',
 				width: '100%',
 				padding: 2,
-				borderRadius: 2,
+				borderRadius: 3,
+				marginBottom: 2,
 				backgroundColor: '#ffffff',
 				boxShadow: 1
 			}}>
@@ -64,6 +65,24 @@ const BooksListView = () => {
 		</Box>
 	);
 
+	const renderPagination = () => {
+			return (
+				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+					<IconButton onClick={controller.onPrevPage} disabled={controller.booksPage === 1}>
+						<SysIcon name="chevronLeft" />
+					</IconButton>
+	
+					<Typography variant="body2">
+						Página {controller.booksPage} de {controller.totalPages}
+					</Typography>
+	
+					<IconButton onClick={controller.onNextPage} disabled={controller.booksPage === controller.totalPages}>
+						<SysIcon name="chevronRight" />
+					</IconButton>
+				</Box>
+			);
+		};
+
 	return (
 		<Container>
 			<Header>
@@ -79,10 +98,23 @@ const BooksListView = () => {
 			</Header>
 
 			<Body>
-				{controller.booksList.map(renderBookCard)}
+				{controller.loading && controller.booksList.length === 0 ? (
+					<Box display="flex" alignItems="center" justifyContent="center" py={4} gap={2}>
+						<CircularProgress size={24} />
+						<Typography variant="body1">Carregando livros...</Typography>
+					</Box>
+				) : controller.booksList.length === 0 ? (
+					<Box display="flex" alignItems="center" justifyContent="center" py={4}>
+						<Typography variant="body1">Nenhum livro encontrado.</Typography>
+					</Box>
+				) : (
+					controller.booksList.map(renderBookCard)
+				)}
 			</Body>
-
-			<Footer />
+			<Footer>
+				{controller.totalPages > 1 && renderPagination()}
+			</Footer>		
+			
 		</Container>
 	);
 };

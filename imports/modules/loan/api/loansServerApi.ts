@@ -23,12 +23,15 @@ class LoanServerApi extends ProductServerBase<ILoans> {
 
 		const self = this;
 
-		this.addPublication('loans.list', function (this: any, filter = {}) {
-			return self.defaultListCollectionPublication(filter, {
-				limit: 5,
-				sort: { updatedAt: -1 },
+		this.addPublication('loans.list', function (this: any, filter = {}, options = {}) {
+			const defOptions = {
+				sort: { returnDate: -1 },
 				projection: PROJECTION_LOAN
-			});
+			};
+
+			const finalOptions = { ...defOptions, ...options };
+
+			return self.defaultListCollectionPublication(filter, finalOptions);
 		});
 
 		this.addPublication('loans.detail', function (this: any, filter = {}) {

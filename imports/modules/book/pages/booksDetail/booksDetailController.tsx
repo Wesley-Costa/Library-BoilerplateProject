@@ -39,7 +39,7 @@ const BooksDetailController = () => {
 	}, [id]);
 
 	const closePage = useCallback(() => {
-		navigate('/');
+		navigate('/books/view');
 	}, []);
 
 	const onDelete = useCallback(() => {
