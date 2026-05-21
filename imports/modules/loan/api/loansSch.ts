@@ -4,7 +4,7 @@ import { ISchema } from '../../../typings/ISchema';
 export interface ILoans extends IDoc {
     bookId: string;
     borrowedVolumes: number;
-    userId: string;
+    assignedUser: string;
     status: 'borrowed' | 'returned';
     loanDate: Date;
     returnDate: Date;
@@ -19,26 +19,26 @@ export const loansSch: ISchema<ILoans> = {
         type: String,
         label: 'Livro',
         defaultValue: '',
-        optional: true
+        optional: false
     },
 	borrowedVolumes: {
 		type: Number,
 		label: 'Quantidade de Volumes Emprestados',
 		defaultValue: 1,
-		optional: true,
+		optional: false,
         min: 1
 	},
-    userId: {
+    assignedUser: {
         type: String,
-        label: 'Usuário que Emprestou',
+        label: 'Usuário que realizou o empréstimo',
         defaultValue: '',
-        optional: true
+        optional: false
     },
     status: {
         type: String,
         label: 'Status',
-        defaultValue: 'borrowed',
-        optional: true,
+        defaultValue: '',
+        optional: false,
         options: () => [
             { value: 'borrowed', label: 'Emprestado' },
             { value: 'returned', label: 'Devolvido' }
@@ -48,19 +48,19 @@ export const loansSch: ISchema<ILoans> = {
         type: Date,
         label: 'Data do Empréstimo',
         defaultValue: '',
-        optional: true
+        optional: false
     },
     returnDate: {
         type: Date,
         label: 'Data da Devolução',
         defaultValue: '',
-        optional: true
+        optional: false
     },
     observation: {
         type: String,
         label: 'Observação',
         defaultValue: '',
-        optional: true
+        optional: false
     },
     createdBy: {
         type: String,

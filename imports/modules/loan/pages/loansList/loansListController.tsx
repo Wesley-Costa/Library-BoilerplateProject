@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import { IMeteorError } from '../../../../typings/IMeteorError';
 import { useTracker } from 'meteor/react-meteor-data';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import LoansListView from './loansListView';
 import { loansApi } from '../../api/loansApi';
 import { ILoans } from '../../api/loansSch';
+import { booksApi } from '/imports/modules/book/api/booksApi';
 
 interface ILoansListContollerContext {
 	loans: ILoans[];
@@ -16,13 +17,13 @@ interface ILoansListContollerContext {
 	loansList: ILoans[];
 	loansPage: number;
 	totalPages: number;
-
 	formatDate: (date: string | Date) => string;
-	onEditLoan: (author: ILoans) => void;
+	onEditLoan: (loan: ILoans) => void;
 	onAddLoan: () => void;
-	onDeleteLoan: (author: ILoans) => void;
+	onDeleteLoan: (loan: ILoans) => void;
 	onNextPage: () => void;
 	onPrevPage: () => void;
+	getBookTitle: (loan: ILoans) => string;
 }
 
 export const LoansListControllerContext = createContext<ILoansListContollerContext>({} as ILoansListContollerContext);
@@ -32,7 +33,6 @@ const LoansListController = () => {
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 	const [loansPage, setLoansPage] = useState(1);
-	const [visibleLoans, setVisibleLoans] = useState<ILoans[]>([]);
 
 	const formatDate = useCallback((date: string | Date) => {
 		if (!date) return '-';
@@ -40,59 +40,43 @@ const LoansListController = () => {
 		return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 	}, []);
 
-	const {
-		loans: loansList,
-		loading: loadingLoans,
-		total: loansTotal
-	} = useTracker(() => {
+	const { loansList, loadingLoans, loansTotal } = useTracker(() => {
 		const skip = (loansPage - 1) * PAGE_SIZE;
-		const filter = {};
-
-		const subHandle = loansApi.subscribe('loans.list', filter, { skip: skip, limit: PAGE_SIZE }) ?? null;
+		const subHandle = loansApi.subscribe('loans.list', {}, { skip, limit: PAGE_SIZE }) ?? null;
 		const isReady = !!subHandle && subHandle.ready();
 
-		const loans = isReady ? loansApi.find(filter, { sort: { loanDate: 1 } }).fetch() : [];
-
-		const totalLoans = loansApi.counts.findOne({ _id: 'loans.listTotal' })?.count ?? 0;
-
 		return {
-			loans,
-			loading: !isReady,
-			total: totalLoans
+			loansList: isReady ? loansApi.find({}, { sort: { loanDate: -1 } }).fetch() : [],
+			loadingLoans: !isReady,
+			loansTotal: loansApi.counts.findOne({ _id: 'loans.listTotal' })?.count ?? 0
 		};
 	}, [loansPage]);
 
-	useEffect(() => {
-		if (!loadingLoans) {
-			setVisibleLoans(loansList);
-		}
-	}, [loadingLoans, loansList]);
+	const { books } = useTracker(() => {
+		const bookIds = loansList.map((l) => l.bookId).filter(Boolean);
+		const subHandle = booksApi.subscribe('books.list', { _id: { $in: bookIds } });
+		const isReady = !!subHandle && subHandle.ready();
 
-	useEffect(() => {
-		const totalPages = Math.max(1, Math.ceil((loansTotal || 0) / PAGE_SIZE));
-		if (loansPage > totalPages && totalPages > 0) {
-			setLoansPage(totalPages);
-		}
-	}, [loansPage, loansTotal]);
+		return {
+			books: isReady ? booksApi.find({ _id: { $in: bookIds } }).fetch() : []
+		};
+	}, [loansList]);
 
-	const totalPages = Math.max(1, Math.ceil((loansTotal || 0) / PAGE_SIZE));
+	const getBookTitle = useCallback(
+		(loan: ILoans) => {
+			const book = books.find((b) => b._id === loan.bookId);
+			return book ? book.title : 'Livro desconhecido';
+		}, [books]);
 
-	const onEditLoan = useCallback(
-		(author: ILoans) => {
-			navigate(`/loans/edit/${author._id}`);
-		},
-		[navigate]
-	);
+	const totalPages = Math.max(1, Math.ceil(loansTotal / PAGE_SIZE));
 
-	const onAddLoan = useCallback(() => {
-		navigate('/loans/create');
-	}, [navigate]);
+	const onEditLoan = useCallback((loan: ILoans) => navigate(`/loans/edit/${loan._id}`), [navigate]);
+	const onAddLoan = useCallback(() => navigate('/loans/create'), [navigate]);
 
 	const onDeleteLoan = useCallback(
-		(author: ILoans) => {
-			if (!author?._id) return;
-
-			loansApi.remove({ _id: author._id }, (e: IMeteorError, r: any) => {
+		(loan: ILoans) => {
+			if (!loan?._id) return;
+			loansApi.remove({ _id: loan._id }, (e: IMeteorError, r: any) => {
 				if (e) {
 					showNotification({
 						type: 'error',
@@ -114,46 +98,44 @@ const LoansListController = () => {
 	);
 
 	const onNextPage = useCallback(() => {
-		if (loansPage < totalPages) {
-			setLoansPage(loansPage + 1);
-		}
+		if (loansPage < totalPages) setLoansPage(loansPage + 1);
 	}, [loansPage, totalPages]);
 
 	const onPrevPage = useCallback(() => {
-		if (loansPage > 1) {
-			setLoansPage(loansPage - 1);
-		}
+		if (loansPage > 1) setLoansPage(loansPage - 1);
 	}, [loansPage]);
 
 	const providerValues: ILoansListContollerContext = useMemo(
 		() => ({
-			loans: visibleLoans,
-			loading: loadingLoans && visibleLoans.length === 0,
+			loans: loansList,
+			loading: loadingLoans,
 			loansTotal,
 			loadingLoans,
 			loadingLoansPage: loadingLoans,
-			loansList: visibleLoans,
+			loansList,
 			loansPage,
 			totalPages,
+			formatDate,
 			onEditLoan,
 			onAddLoan,
 			onDeleteLoan,
 			onNextPage,
 			onPrevPage,
-			formatDate
+			getBookTitle
 		}),
 		[
-			visibleLoans,
+			loansList,
 			loadingLoans,
 			loansTotal,
-			totalPages,
 			loansPage,
+			totalPages,
+			formatDate,
 			onEditLoan,
 			onAddLoan,
 			onDeleteLoan,
 			onNextPage,
 			onPrevPage,
-			formatDate
+			getBookTitle
 		]
 	);
 

@@ -7,35 +7,54 @@ import { IBooks } from '../../api/booksSch';
 import { ISchema } from '../../../../typings/ISchema';
 import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
+import { useTracker } from 'meteor/react-meteor-data';
+import { authorsApi } from '../../../author/api/authorsApi';
 
 interface IBooksCreateControllerContext {
 	closePage: () => void;
 	document: IBooks;
 	schema: ISchema<IBooks>;
 	onSubmit: (doc: IBooks) => void;
+	optionsAuthors: { value: string; label: string }[];
+	loadingAuthors: boolean;
 }
 
-export const BooksCreateControllerContext = createContext<IBooksCreateControllerContext>({} as IBooksCreateControllerContext);
+export const BooksCreateControllerContext = createContext<IBooksCreateControllerContext>(
+	{} as IBooksCreateControllerContext
+);
 
 const BooksCreateController = () => {
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
+	const { optionsAuthors, loadingAuthors } = useTracker(() => {
+		const subHandle = authorsApi.subscribe('authors.list') ?? null;
+		const isReady = !!subHandle && subHandle.ready();
+
+		const authors = isReady ? authorsApi.find({}, { sort: { name: 1 } }).fetch() : [];
+
+		const optionsAuthors = authors.map((author) => ({
+			value: author._id,
+			label: author.name
+		}));
+
+		return { optionsAuthors, loadingAuthors: !isReady };
+	}, []);
+
 	const closePage = useCallback(() => {
 		navigate('/books/view');
-	}, []);
+	}, [navigate]);
 
 	const onSubmit = useCallback(
 		(doc: IBooks) => {
 			const user = Meteor.userId();
-			const createdAt = new Date();
-			const updatedAt = new Date();
+			const now = new Date();
 
 			const enrichedDoc: IBooks = {
 				...doc,
 				createdBy: user,
-				createdAt: createdAt,
-				updatedAt: updatedAt
+				createdAt: now,
+				updatedAt: now
 			};
 
 			booksApi.insert(enrichedDoc, (e: IMeteorError) => {
@@ -66,9 +85,11 @@ const BooksCreateController = () => {
 				closePage,
 				document: {} as IBooks,
 				schema: booksApi.getSchema(),
-				onSubmit
+				onSubmit,
+				optionsAuthors,
+				loadingAuthors
 			}}>
-			{<BooksCreateView />}
+			<BooksCreateView />
 		</BooksCreateControllerContext.Provider>
 	);
 };

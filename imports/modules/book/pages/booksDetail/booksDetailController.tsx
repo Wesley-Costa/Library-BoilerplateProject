@@ -9,6 +9,7 @@ import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import { useTracker } from 'meteor/react-meteor-data';
 import { BooksModuleContext } from '../../booksContainer';
+import { authorsApi } from '../../../author/api/authorsApi';
 
 interface IBooksDetailControllerContext {
 	closePage: () => void;
@@ -17,6 +18,8 @@ interface IBooksDetailControllerContext {
 	schema: ISchema<IBooks>;
 	onSubmit: (doc: IBooks) => void;
 	onDelete: () => void;
+    optionsAuthors: { value: string; label: string }[];
+    loadingAuthors: boolean;
 }
 
 export const BooksDetailControllerContext = createContext<IBooksDetailControllerContext>(
@@ -37,6 +40,22 @@ const BooksDetailController = () => {
 			loading: !!subHandle && !subHandle?.ready()
 		};
 	}, [id]);
+
+	const { optionsAuthors, loadingAuthors } = useTracker(() => {
+			const subHandle = authorsApi.subscribe('authors.list') ?? null;
+			const isReady = !!subHandle && subHandle.ready();
+	
+			const authors = isReady
+				? authorsApi.find({}, { sort: { name: 1 } }).fetch()
+				: [];
+	
+			const optionsAuthors = authors.map((author) => ({
+				value: author._id,
+				label: author.name
+			}));
+	
+			return { optionsAuthors, loadingAuthors: !isReady };
+		}, []);
 
 	const closePage = useCallback(() => {
 		navigate('/books/view');
@@ -100,15 +119,18 @@ const BooksDetailController = () => {
 	return (
 		<BooksDetailControllerContext.Provider
 			value={{
-				closePage,
 				document: {
 					...document,
 					_id: id
 				} as IBooks,
 				loading,
 				schema: booksApi.getSchema(),
+                loadingAuthors,
+                optionsAuthors,
 				onSubmit,
-				onDelete
+				onDelete,
+				closePage
+				
 			}}>
 			{<BooksDetailView />}
 		</BooksDetailControllerContext.Provider>

@@ -3,7 +3,7 @@ import { ISchema } from '../../../typings/ISchema';
 
 export interface IBooks extends IDoc {
     title: string;
-	description: string;
+    description: string;
     authorId: string;
     isbn: string;
     publisher: string;
@@ -22,18 +22,21 @@ export const booksSch: ISchema<IBooks> = {
         defaultValue: '',
         optional: false
     },
-	description: {
+
+    description: {
         type: String,
         label: 'Descrição',
         defaultValue: '',
         optional: false
     },
+
     authorId: {
         type: String,
         label: 'Autor',
         defaultValue: '',
-        optional: true
+        optional: false
     },
+
     isbn: {
         type: String,
         label: 'ISBN',
@@ -41,23 +44,28 @@ export const booksSch: ISchema<IBooks> = {
         optional: false,
         mask: '###-##-####-###-#'
     },
+
     publisher: {
         type: String,
         label: 'Editora',
         defaultValue: '',
         optional: false
     },
+
     yearPublication: {
         type: Number,
         label: 'Ano de Publicação',
-        defaultValue: '',
-        optional: false
+        defaultValue: new Date().getFullYear(),
+        optional: false,
+        min: 1700,
+        max: new Date().getFullYear()
     },
+
     category: {
         type: String,
         label: 'Categoria',
         defaultValue: '',
-        optional: true,
+        optional: false,
         options: () => [
             { value: 'ficcao', label: 'Ficção' },
             { value: 'nao-ficcao', label: 'Não Ficção' },
@@ -68,6 +76,7 @@ export const booksSch: ISchema<IBooks> = {
             { value: 'outro', label: 'Outro' }
         ]
     },
+
     volumes: {
         type: Number,
         label: 'Quantidade de Volumes',
@@ -75,22 +84,23 @@ export const booksSch: ISchema<IBooks> = {
         optional: false,
         min: 1
     },
+
     createdBy: {
         type: String,
         label: 'Criado por',
-        defaultValue: '',
+        defaultValue: null,
         optional: true
     },
+
     createdAt: {
         type: Date,
         label: 'Data de Criação',
-        defaultValue: '',
         optional: true
     },
+
     updatedAt: {
         type: Date,
         label: 'Data de Atualização',
-        defaultValue: '',
         optional: true
     }
 };
