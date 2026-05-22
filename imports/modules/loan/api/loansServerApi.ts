@@ -6,13 +6,16 @@ import { ProductServerBase } from '../../../api/productServerBase';
 // endregion
 
 const PROJECTION_LOAN = {
-	bookId: 1,
-	userId: 1,
-	status: 1,
-	borrowedVolumes: 1,
-	loanDate: 1,
-	returnDate: 1,
-	observation: 1
+    bookId: 1,
+    borrowedVolumes: 1,
+    assignedUser: 1,
+    status: 1,
+    loanDate: 1,
+    returnDate: 1,
+    observation:1,
+    createdBy:1,
+    createdAt: 1,
+    updatedAt: 1
 }
 
 class LoanServerApi extends ProductServerBase<ILoans> {
@@ -38,7 +41,7 @@ class LoanServerApi extends ProductServerBase<ILoans> {
 			return self.defaultDetailCollectionPublication(filter, {
 				projection: PROJECTION_LOAN
 			});
-		});
+		});			
 	}
 }
 

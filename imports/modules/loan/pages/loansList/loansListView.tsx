@@ -37,6 +37,9 @@ const LoanListView = () => {
 					<Typography variant="body2" color="textSecondary">
 						Data de Devolução: {controller.formatDate(loan.returnDate)}
 					</Typography>
+					<Typography variant="body2" color="textSecondary">
+						Livro: {controller.getBookTitle(loan)}
+					</Typography>
 				</Stack>
 			</Box>
 

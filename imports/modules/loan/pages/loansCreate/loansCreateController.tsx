@@ -7,12 +7,16 @@ import { ISchema } from '../../../../typings/ISchema';
 import { IMeteorError } from '../../../../typings/BoilerplateDefaultTypings';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import { Meteor } from 'meteor/meteor';
+import { useTracker } from 'meteor/react-meteor-data';
+import { booksApi } from '../../../book/api/booksApi';
 
 interface ILoansCreateControllerContext {
 	closePage: () => void;
 	document: ILoans;
 	schema: ISchema<ILoans>;
 	onSubmit: (doc: ILoans) => void;
+	optionsBooks: { value: string; label: string }[];
+	loadingBooks: boolean;
 }
 
 export const LoansCreateControllerContext = createContext<ILoansCreateControllerContext>(
@@ -20,11 +24,25 @@ export const LoansCreateControllerContext = createContext<ILoansCreateController
 );
 
 const LoansCreateController = () => {
-const navigate = useNavigate();
+	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
 
+	const { optionsBooks, loadingBooks } = useTracker(() => {
+		const subHandle = booksApi.subscribe('books.list') ?? null;
+		const isReady = !!subHandle && subHandle.ready();
+
+		const books = isReady ? booksApi.find({}, { sort: { title: 1 } }).fetch() : [];
+
+		const optionsBooks = books.map((book) => ({
+			value: book._id,
+			label: book.title
+		}));
+
+		return { optionsBooks, loadingBooks: !isReady };
+	}, []);
+
 	const closePage = useCallback(() => {
-		navigate('/');
+		navigate('/loans/view');
 	}, []);
 
 	const onSubmit = useCallback(
@@ -37,7 +55,9 @@ const navigate = useNavigate();
 				...doc,
 				createdBy: user,
 				createdAt: createdAt,
-				updatedAt: updatedAt
+				updatedAt: updatedAt,
+				loanDate: new Date(doc.loanDate),
+				returnDate: new Date(doc.returnDate)
 			};
 
 			loansApi.insert(enrichedDoc, (e: IMeteorError) => {
@@ -65,10 +85,12 @@ const navigate = useNavigate();
 	return (
 		<LoansCreateControllerContext.Provider
 			value={{
-				closePage,
 				document: {} as ILoans,
 				schema: loansApi.getSchema(),
-				onSubmit
+				optionsBooks,
+				loadingBooks,
+				onSubmit,
+				closePage
 			}}>
 			{<LoansCreateView />}
 		</LoansCreateControllerContext.Provider>
