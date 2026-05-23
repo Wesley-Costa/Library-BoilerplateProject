@@ -17,11 +17,11 @@ export default (props: IDefaultContainerProps) => {
 	const state = screenState ?? props.screenState;
 	const id = loanId ?? props.id;
 
-	const validState = ['view', 'edit', 'create'];
+	const validState = ['view', 'return', 'extension', 'edit', 'create'];
 
 	const renderPage = () => {
         if (state === 'create' && validState.includes(state)) return <LoansCreateController />;
-        if (state === 'edit' && validState.includes(state)) return <LoansDetailController />;
+        if ((state === 'return' || state === 'extension' || state === 'edit') && validState.includes(state)) return <LoansDetailController />;
         return <LoansListController />;
     };
 

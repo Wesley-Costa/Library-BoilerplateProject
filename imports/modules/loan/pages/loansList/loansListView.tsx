@@ -4,12 +4,20 @@ import { ILoans } from '../../api/loansSch';
 import LoanListStyles from './loansListStyles';
 import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 import { SysFab } from '../../../../ui/components/sysFab/sysFab';
-import { Box, Typography, Stack, Tooltip, IconButton, CircularProgress } from '@mui/material';
+import { Box, Typography, Stack, IconButton, CircularProgress } from '@mui/material';
 import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/SysButton';
 
 const LoanListView = () => {
 	const controller = useContext(LoansListControllerContext);
 	const { Container, Header, Body, Footer } = LoanListStyles;
+
+	const styleButton = {
+		minWidth: 0,
+		p: '8px',
+		'& .MuiButton-startIcon': {
+			margin: 0
+		}
+	};
 
 	const renderLoanCard = (loan: ILoans) => (
 		<Box
@@ -32,40 +40,66 @@ const LoanListView = () => {
 				</Typography>
 				<Stack>
 					<Typography variant="body2" color="textSecondary">
-						Quantidade de livros: {loan.borrowedVolumes}
+						Livro: {controller.getBookTitle(loan)}
+					</Typography>
+					<Typography variant="body2" color="textSecondary">
+						Quantidade: {loan.borrowedVolumes}
 					</Typography>
 					<Typography variant="body2" color="textSecondary">
 						Data de Devolução: {controller.formatDate(loan.returnDate)}
-					</Typography>
-					<Typography variant="body2" color="textSecondary">
-						Livro: {controller.getBookTitle(loan)}
 					</Typography>
 				</Stack>
 			</Box>
 
 			<Stack direction="row" spacing={1}>
-				<Tooltip title="Editar">
-					<SysButton
-						variant="contained"
-						startIcon={<SysIcon name="edit" />}
-						color="primary"
-						onClick={(e: React.MouseEvent) => {
-							e.stopPropagation();
-							controller.onEditLoan(loan);
-						}}
-					/>
-				</Tooltip>
+				{loan.status !== 'returned' && (
+					<>
+						<SysButton
+							variant="contained"
+							startIcon={<SysIcon name="schedule" />}
+							color="primary"
+							onClick={(e: React.MouseEvent) => {
+								e.stopPropagation();
+								controller.onExtensionLoan(loan);
+							}}
+							title="Prorrogação"
+							sx={styleButton}
+						/>
 
-				<Tooltip title="Excluir">
-					<SysButton
-						variant="outlined"
-						startIcon={<SysIcon name="delete" color="error" />}
-						onClick={(e: React.MouseEvent) => {
-							e.stopPropagation();
-							controller.onDeleteLoan(loan);
-						}}
-					/>
-				</Tooltip>
+						<SysButton
+							variant="contained"
+							startIcon={<SysIcon name="event" />}
+							color="primary"
+							onClick={(e: React.MouseEvent) => {
+								e.stopPropagation();
+								controller.onReturnLoan(loan);
+							}}
+							title="Devolução"
+							sx={styleButton}
+						/>
+					</>
+				)}
+				<SysButton
+					variant="contained"
+					startIcon={<SysIcon name="edit" />}
+					color="primary"
+					onClick={(e: React.MouseEvent) => {
+						e.stopPropagation();
+						controller.onEditLoan(loan);
+					}}
+					title="Editar"
+					sx={styleButton}
+				/>
+				<SysButton
+					variant="contained"
+					startIcon={<SysIcon name="delete" />}
+					onClick={(e: React.MouseEvent) => {
+						e.stopPropagation();
+						controller.onDeleteLoan(loan);
+					}}
+					title="Excluir"
+					sx={styleButton}
+				/>
 			</Stack>
 		</Box>
 	);
@@ -116,9 +150,7 @@ const LoanListView = () => {
 					controller.loansList.map(renderLoanCard)
 				)}
 			</Body>
-			<Footer>
-				{controller.totalPages > 1 && renderPagination()}
-			</Footer>
+			<Footer>{controller.totalPages > 1 && renderPagination()}</Footer>
 		</Container>
 	);
 };

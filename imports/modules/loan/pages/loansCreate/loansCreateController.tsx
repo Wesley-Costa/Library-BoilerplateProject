@@ -17,6 +17,9 @@ interface ILoansCreateControllerContext {
 	onSubmit: (doc: ILoans) => void;
 	optionsBooks: { value: string; label: string }[];
 	loadingBooks: boolean;
+	selectedBook: string;
+	setSelectedBook: (id: string) => void;
+	availableVolumes: number | null;
 }
 
 export const LoansCreateControllerContext = createContext<ILoansCreateControllerContext>(
@@ -26,57 +29,113 @@ export const LoansCreateControllerContext = createContext<ILoansCreateController
 const LoansCreateController = () => {
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
+	const [selectedBook, setSelectedBook] = React.useState<string>('');
 
-	const { optionsBooks, loadingBooks } = useTracker(() => {
-		const subHandle = booksApi.subscribe('books.list') ?? null;
-		const isReady = !!subHandle && subHandle.ready();
+	const { optionsBooks, loadingBooks, availableVolumes } = useTracker(() => {
+		const booksHandle = booksApi.subscribe('books.list') ?? null;
+		const loansHandle = loansApi.subscribe('loans.list') ?? null;
 
-		const books = isReady ? booksApi.find({}, { sort: { title: 1 } }).fetch() : [];
+		const booksReady = !!booksHandle && booksHandle.ready();
+		const loansReady = !!loansHandle && loansHandle.ready();
 
-		const optionsBooks = books.map((book) => ({
-			value: book._id,
-			label: book.title
-		}));
+		const books = booksReady ? booksApi.find({}, { sort: { title: 1 } }).fetch() : [];
+		
+		const selectedBookData = selectedBook ? (booksApi.findOne({ _id: selectedBook }) ?? null) : null;
 
-		return { optionsBooks, loadingBooks: !isReady };
-	}, []);
+		return {
+			optionsBooks: books.map((b) => ({ value: b._id!, label: b.title })),
+			loadingBooks: !booksReady || !loansReady,
+			availableVolumes: selectedBookData?.volumes ?? null
+		};
+	}, [selectedBook]);
 
 	const closePage = useCallback(() => {
 		navigate('/loans/view');
-	}, []);
+	}, [navigate]);
 
 	const onSubmit = useCallback(
 		(doc: ILoans) => {
-			const user = Meteor.userId();
-			const createdAt = new Date();
-			const updatedAt = new Date();
+			const borrowedVolumes = Number(doc.borrowedVolumes);
 
-			const enrichedDoc: ILoans = {
-				...doc,
-				createdBy: user,
-				createdAt: createdAt,
-				updatedAt: updatedAt,
-				loanDate: new Date(doc.loanDate),
-				returnDate: new Date(doc.returnDate)
-			};
+			const currentBookData = booksApi.findOne({ _id: doc.bookId });
+			const currentAvailableVolumes = currentBookData?.volumes ?? null;
 
-			loansApi.insert(enrichedDoc, (e: IMeteorError) => {
-				if (!e) {
-					closePage();
-					showNotification({
-						type: 'success',
-						title: 'Livro criado!',
-						message: 'O livro foi cadastrado com sucesso!',
-						showCloseButton: true
-					});
-				} else {
+			if (!currentBookData) {
+				showNotification({
+					type: 'error',
+					title: 'Livro não encontrado!',
+					message: 'Não foi possível localizar o livro selecionado.',
+					showCloseButton: true
+				});
+				return;
+			}
+
+			if (currentAvailableVolumes === 0) {
+				showNotification({
+					type: 'error',
+					title: 'Sem volumes disponíveis!',
+					message: 'Todos os volumes deste livro já estão emprestados.',
+					showCloseButton: true
+				});
+				return;
+			}
+
+			if (borrowedVolumes > (currentAvailableVolumes ?? 0)) {
+				showNotification({
+					type: 'error',
+					title: 'Volumes insuficientes!',
+					message: `Existem apenas ${currentAvailableVolumes} volume(s) disponível(is). Você tentou emprestar ${borrowedVolumes}.`,
+					showCloseButton: true
+				});
+				return;
+			}
+
+			const originalBook = { ...currentBookData };
+			const updatedBook = { ...currentBookData, volumes: currentBookData.volumes - borrowedVolumes };
+
+			booksApi.update(updatedBook, (bookError: IMeteorError) => {
+				if (bookError) {
 					showNotification({
 						type: 'error',
-						title: 'Erro ao criar livro!',
-						message: `Erro ao realizar a operação: ${e.reason}`,
+						title: 'Erro ao atualizar livro!',
+						message: `Erro ao realizar a operação: ${bookError.reason}`,
 						showCloseButton: true
 					});
+					return;
 				}
+
+				const now = new Date();
+				const enrichedDoc: ILoans = {
+					...doc,
+					borrowedVolumes,
+					createdBy: Meteor.userId(),
+					createdAt: now,
+					updatedAt: now,
+					loanDate: new Date(doc.loanDate),
+					returnDate: new Date(doc.returnDate)
+				};
+
+				loansApi.insert(enrichedDoc, (insertError: IMeteorError) => {
+					if (insertError) {
+						booksApi.update(originalBook, (_revertError: IMeteorError) => {
+							showNotification({
+								type: 'error',
+								title: 'Erro ao criar empréstimo!',
+								message: `Erro ao realizar a operação: ${insertError.reason}`,
+								showCloseButton: true
+							});
+						});
+						return;
+					}
+
+					showNotification({
+						type: 'success',
+						title: 'Empréstimo criado!',
+						message: 'O empréstimo foi cadastrado com sucesso!',
+						showCloseButton: true
+					});
+					closePage();
+				});
 			});
 		},
 		[closePage, showNotification]
@@ -89,10 +148,13 @@ const LoansCreateController = () => {
 				schema: loansApi.getSchema(),
 				optionsBooks,
 				loadingBooks,
+				selectedBook,
+				setSelectedBook,
+				availableVolumes,
 				onSubmit,
 				closePage
 			}}>
-			{<LoansCreateView />}
+			<LoansCreateView />
 		</LoansCreateControllerContext.Provider>
 	);
 };
