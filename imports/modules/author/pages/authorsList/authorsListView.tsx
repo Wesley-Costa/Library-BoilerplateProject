@@ -10,7 +10,13 @@ import { SysButton } from '/imports/ui/components/SimpleFormFields/SysButton/Sys
 const AuthorsListView = () => {
 	const controller = useContext(AuthorsListControllerContext);
 	const { Container, Header, Body, Footer } = AuthorListStyles;
-
+	const styleButton = {
+		minWidth: 0,
+		p: '8px',
+		'& .MuiButton-startIcon': {
+			margin: 0
+		}
+	};
 	const renderAuthorCard = (author: IAuthors) => (
 		<Box
 			key={author._id}
@@ -41,35 +47,35 @@ const AuthorsListView = () => {
 			</Box>
 
 			<Stack direction="row" spacing={1}>
-				<Tooltip title="Editar">
-					<SysButton
-						variant="contained"
-						startIcon={<SysIcon name="edit" />}
-						color="primary"
-						onClick={(e: React.MouseEvent) => {
-							e.stopPropagation();
-							controller.onEditAuthor(author);
-						}}
-					/>
-				</Tooltip>
+				<SysButton
+					variant="contained"
+					startIcon={<SysIcon name="edit" />}
+					color="primary"
+					onClick={(e: React.MouseEvent) => {
+						e.stopPropagation();
+						controller.onEditAuthor(author);
+					}}
+					title="Editar"
+					sx={styleButton}
+				/>
 
-				<Tooltip title="Excluir">
-					<SysButton
-						variant="outlined"
-						startIcon={<SysIcon name="delete" color="error" />}
-						onClick={(e: React.MouseEvent) => {
-							e.stopPropagation();
-							controller.onDeleteAuthor(author);
-						}}
-					/>
-				</Tooltip>
+				<SysButton
+					variant="contained"
+					startIcon={<SysIcon name="delete" />}
+					onClick={(e: React.MouseEvent) => {
+						e.stopPropagation();
+						controller.onDeleteAuthor(author);
+					}}
+					title="Excluir"
+					sx={styleButton}
+				/>
 			</Stack>
 		</Box>
 	);
 
 	const renderPagination = () => {
 		return (
-			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 				<IconButton onClick={controller.onPrevPage} disabled={controller.authorsPage === 1}>
 					<SysIcon name="chevronLeft" />
 				</IconButton>
@@ -114,9 +120,7 @@ const AuthorsListView = () => {
 				)}
 			</Body>
 
-			<Footer>
-				{controller.totalPages > 1 && renderPagination()}
-			</Footer>
+			<Footer>{controller.totalPages > 1 && renderPagination()}</Footer>
 		</Container>
 	);
 };

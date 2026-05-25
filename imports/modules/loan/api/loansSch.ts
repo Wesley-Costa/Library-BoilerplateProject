@@ -21,13 +21,13 @@ export const loansSch: ISchema<ILoans> = {
         defaultValue: '',
         optional: false
     },
-	borrowedVolumes: {
-		type: Number,
-		label: 'Quantidade de Volumes Emprestados',
-		defaultValue: 1,
-		optional: false,
+    borrowedVolumes: {
+        type: Number,
+        label: 'Quantidade',
+        defaultValue: 1,
+        optional: false,
         min: 1
-	},
+    },
     assignedUser: {
         type: String,
         label: 'Usuário que realizou o empréstimo',
@@ -37,7 +37,6 @@ export const loansSch: ISchema<ILoans> = {
     status: {
         type: String,
         label: 'Status',
-        defaultValue: '',
         optional: false,
         options: () => [
             { value: 'borrowed', label: 'Emprestado' },
@@ -47,20 +46,20 @@ export const loansSch: ISchema<ILoans> = {
     loanDate: {
         type: Date,
         label: 'Data do Empréstimo',
-        defaultValue: '',
+        defaultValue: new Date(),
         optional: false
     },
     returnDate: {
         type: Date,
         label: 'Data da Devolução',
-        defaultValue: '',
+        defaultValue: new Date(),
         optional: false
     },
     observation: {
         type: String,
         label: 'Observação',
         defaultValue: '',
-        optional: false
+        optional: true
     },
     createdBy: {
         type: String,
@@ -71,13 +70,13 @@ export const loansSch: ISchema<ILoans> = {
     createdAt: {
         type: Date,
         label: 'Data de Criação',
-        defaultValue: '',
+        defaultValue: new Date(),
         optional: true
     },
     updatedAt: {
         type: Date,
         label: 'Data de Atualização',
-        defaultValue: '',
+        defaultValue: new Date(),
         optional: true
     }
 };

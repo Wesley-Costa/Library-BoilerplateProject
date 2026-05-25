@@ -9,7 +9,7 @@ export interface IBooks extends IDoc {
     publisher: string;
     yearPublication: number;
     category: string;
-    volumes: number; 
+    volumes: number;
     createdBy: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -22,21 +22,18 @@ export const booksSch: ISchema<IBooks> = {
         defaultValue: '',
         optional: false
     },
-
     description: {
         type: String,
         label: 'Descrição',
         defaultValue: '',
         optional: false
     },
-
     authorId: {
         type: String,
         label: 'Autor',
         defaultValue: '',
         optional: false
     },
-
     isbn: {
         type: String,
         label: 'ISBN',
@@ -44,14 +41,12 @@ export const booksSch: ISchema<IBooks> = {
         optional: false,
         mask: '###-##-####-###-#'
     },
-
     publisher: {
         type: String,
         label: 'Editora',
         defaultValue: '',
         optional: false
     },
-
     yearPublication: {
         type: Number,
         label: 'Ano de Publicação',
@@ -60,7 +55,6 @@ export const booksSch: ISchema<IBooks> = {
         min: 1700,
         max: new Date().getFullYear()
     },
-
     category: {
         type: String,
         label: 'Categoria',
@@ -76,31 +70,29 @@ export const booksSch: ISchema<IBooks> = {
             { value: 'outro', label: 'Outro' }
         ]
     },
-
     volumes: {
         type: Number,
         label: 'Quantidade de Volumes',
         defaultValue: 1,
         optional: false,
-        min: 1
+        min: 0
     },
-
     createdBy: {
         type: String,
         label: 'Criado por',
         defaultValue: null,
         optional: true
     },
-
     createdAt: {
         type: Date,
         label: 'Data de Criação',
+        defaultValue: new Date(),
         optional: true
     },
-
     updatedAt: {
         type: Date,
         label: 'Data de Atualização',
+        defaultValue: new Date(),
         optional: true
     }
 };

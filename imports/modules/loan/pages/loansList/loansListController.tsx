@@ -24,6 +24,8 @@ interface ILoansListContollerContext {
 	onNextPage: () => void;
 	onPrevPage: () => void;
 	getBookTitle: (loan: ILoans) => string;
+	onExtensionLoan: (loan: ILoans) => void;
+	onReturnLoan: (loan: ILoans) => void;
 }
 
 export const LoansListControllerContext = createContext<ILoansListContollerContext>({} as ILoansListContollerContext);
@@ -72,6 +74,9 @@ const LoansListController = () => {
 
 	const onEditLoan = useCallback((loan: ILoans) => navigate(`/loans/edit/${loan._id}`), [navigate]);
 	const onAddLoan = useCallback(() => navigate('/loans/create'), [navigate]);
+	const onExtensionLoan = useCallback((loan: ILoans) => navigate(`/loans/extension/${loan._id}`), [navigate]);
+	const onReturnLoan = useCallback((loan: ILoans) => navigate(`/loans/return/${loan._id}`), [navigate]);
+
 
 	const onDeleteLoan = useCallback(
 		(loan: ILoans) => {
@@ -117,6 +122,8 @@ const LoansListController = () => {
 			totalPages,
 			formatDate,
 			onEditLoan,
+			onExtensionLoan,
+			onReturnLoan,
 			onAddLoan,
 			onDeleteLoan,
 			onNextPage,
@@ -131,6 +138,8 @@ const LoansListController = () => {
 			totalPages,
 			formatDate,
 			onEditLoan,
+			onReturnLoan,
+			onExtensionLoan,
 			onAddLoan,
 			onDeleteLoan,
 			onNextPage,

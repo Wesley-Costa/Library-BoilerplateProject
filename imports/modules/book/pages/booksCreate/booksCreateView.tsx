@@ -11,60 +11,58 @@ import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectFi
 import { Stack } from '@mui/material';
 
 const BooksCreateView = () => {
-    const controller = useContext(BooksCreateControllerContext);
-    const { Container, Body, Header, Footer, FormColumn } = BooksCreateStyles;
+	const controller = useContext(BooksCreateControllerContext);
+	const { Container, Body, Header, Footer, FormColumn } = BooksCreateStyles;
 
-    return (
-        <Container>
-            <Header>
-                <Typography variant="h6">Adicionar Livro</Typography>
-            </Header>
+	return (
+		<Container>
+			<Header>
+				<Typography variant="h6">Adicionar Livro</Typography>
+			</Header>
 
-            <SysForm
-                mode="create"
-                schema={controller.schema}
-                doc={controller.document}
-                onSubmit={controller.onSubmit}>
+			<SysForm mode="create" schema={controller.schema} doc={controller.document} onSubmit={controller.onSubmit}>
+				<Body>
+					<FormColumn>
+						<SysTextField name="title" placeholder="Título do livro" />
 
-                <Body>
-                    <FormColumn>
-                        <SysTextField name="title" placeholder="Título do livro" />
+						<SysSelectField
+							name="authorId"
+							label="Autor"
+							placeholder="Selecione o autor"
+							options={controller.optionsAuthors}
+							loading={controller.loadingAuthors}
+							onChange={(e: any) => {
+								const value =
+									e?.target?.value !== undefined
+										? e.target.value
+										: e;
+								controller.setAuthorSelected(value);
+							}}
+						/>
 
-                        <SysSelectField
-                            name="authorId"
-                            label="Autor"
-                            placeholder='Selecione o autor'
-                            options={controller.optionsAuthors}
-                            loading={controller.loadingAuthors}/>
+						<SysTextField name="description" placeholder="Descrição do livro" multiline rows={4} />
+						<Stack direction="row" width="100%" spacing={2}>
+							<SysTextField name="isbn" placeholder="ISBN do livro" type="text" />
+							<SysTextField name="publisher" placeholder="Editora do livro" />
+						</Stack>
 
-                        <SysTextField name="description" placeholder="Descrição do livro" multiline rows={4} />
-                        <SysTextField name="isbn" placeholder="ISBN do livro" type="text" />
-                        <SysTextField name="publisher" placeholder="Editora do livro" />
+						<Stack direction="row" width="100%" spacing={3}>
+							<SysTextField name="yearPublication" placeholder="Ano de publicação" type="number" />
+							<SysSelectField name="category" placeholder="Categoria do livro" />
+							<SysTextField name="volumes" placeholder="Número de volumes" type="number" />
+						</Stack>
+					</FormColumn>
+				</Body>
 
-                        <Stack direction="row" width="100%" spacing={2}>
-                            <SysTextField name="yearPublication" placeholder="Ano de publicação" type="number" />
-							<SysSelectField
-                                name="category"
-                                placeholder="Categoria do livro"
-                            />
-                        </Stack>
-
-                        <SysTextField name="volumes" placeholder="Número de volumes" type="number" />
-                    </FormColumn>
-                </Body>
-
-                <Footer>
-                    <SysButton
-                        variant="outlined"
-                        startIcon={<SysIcon name="close" />}
-                        onClick={controller.closePage}>
-                        Cancelar
-                    </SysButton>
-                    <SysFormButton>Salvar</SysFormButton>
-                </Footer>
-            </SysForm>
-        </Container>
-    );
+				<Footer>
+					<SysButton variant="outlined" startIcon={<SysIcon name="close" />} onClick={controller.closePage}>
+						Cancelar
+					</SysButton>
+					<SysFormButton>Salvar</SysFormButton>
+				</Footer>
+			</SysForm>
+		</Container>
+	);
 };
 
 export default BooksCreateView;

@@ -22,31 +22,30 @@ const BooksDetailView = () => {
 
 			<SysForm mode="edit" schema={controller.schema} doc={controller.document} onSubmit={controller.onSubmit}>
 				<Body>
-                    <FormColumn>
-                        <SysTextField name="title" placeholder="Título do livro" />
+					<FormColumn>
+						<SysTextField name="title" placeholder="Título do livro" />
 
-                        <SysSelectField
-                            name="authorId"
-                            label="Autor"
-                            placeholder='Selecione o autor'
-                            options={controller.optionsAuthors}
-                            loading={controller.loadingAuthors}/>
+						<SysSelectField
+							name="authorId"
+							label="Autor"
+							placeholder="Selecione o autor"
+							options={controller.optionsAuthors}
+							loading={controller.loadingAuthors}
+						/>
 
-                        <SysTextField name="description" placeholder="Descrição do livro" multiline rows={4} />
-                        <SysTextField name="isbn" placeholder="ISBN do livro" type="text" />
-                        <SysTextField name="publisher" placeholder="Editora do livro" />
+						<SysTextField name="description" placeholder="Descrição do livro" multiline rows={4} />
+						<Stack direction="row" width="100%" spacing={2}>
+							<SysTextField name="isbn" placeholder="ISBN do livro" type="text" />
+							<SysTextField name="publisher" placeholder="Editora do livro" />
+						</Stack>
 
-                        <Stack direction="row" width="100%" spacing={2}>
-                            <SysTextField name="yearPublication" placeholder="Ano de publicação" type="number" />
-							<SysSelectField
-                                name="category"
-                                placeholder="Categoria do livro"
-                            />
-                        </Stack>
-
-                        <SysTextField name="volumes" placeholder="Número de volumes" type="number" />
-                    </FormColumn>
-                </Body>
+						<Stack direction="row" width="100%" spacing={3}>
+							<SysTextField name="yearPublication" placeholder="Ano de publicação" type="number" />
+							<SysSelectField name="category" placeholder="Categoria do livro" />
+							<SysTextField name="volumes" placeholder="Número de volumes" type="number" />
+						</Stack>
+					</FormColumn>
+				</Body>
 
 				<Footer>
 					<SysButton variant="contained" color="error" startIcon={<SysIcon name="delete" />} onClick={controller.onDelete}>

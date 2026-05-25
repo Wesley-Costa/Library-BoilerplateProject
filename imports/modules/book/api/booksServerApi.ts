@@ -26,7 +26,6 @@ class BooksServerApi extends ProductServerBase<IBooks> {
 		this.addPublication('books.list', function (this: any, filter = {}, options = {}) {
 
 			const defOptions = {
-				sort: { updatedAt: -1 },
 				projection: PROJECTION_BOOK
 			};
 

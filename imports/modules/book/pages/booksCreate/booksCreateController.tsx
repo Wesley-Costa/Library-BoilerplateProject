@@ -17,6 +17,7 @@ interface IBooksCreateControllerContext {
 	onSubmit: (doc: IBooks) => void;
 	optionsAuthors: { value: string; label: string }[];
 	loadingAuthors: boolean;
+	setAuthorSelected: (id: string) => void;
 }
 
 export const BooksCreateControllerContext = createContext<IBooksCreateControllerContext>(
@@ -26,6 +27,7 @@ export const BooksCreateControllerContext = createContext<IBooksCreateController
 const BooksCreateController = () => {
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
+	const [auhtorSelected, setAuthorSelected] = React.useState<string>('');
 
 	const { optionsAuthors, loadingAuthors } = useTracker(() => {
 		const subHandle = authorsApi.subscribe('authors.list') ?? null;
@@ -87,7 +89,8 @@ const BooksCreateController = () => {
 				schema: booksApi.getSchema(),
 				onSubmit,
 				optionsAuthors,
-				loadingAuthors
+				loadingAuthors,
+				setAuthorSelected
 			}}>
 			<BooksCreateView />
 		</BooksCreateControllerContext.Provider>
