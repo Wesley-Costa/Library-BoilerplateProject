@@ -20,12 +20,14 @@ const SignInPage: React.FC = () => {
 
 	const handleSubmit = ({ email, password }: { email: string; password: string }) => {
 		signIn(email, password, (err) => {
-			if (!err) navigate('/');
-			showNotification({
-				type: 'error',
-				title: 'Erro ao tentar logar',
-				message: 'Email ou senha inválidos',
-			});
+			if (!err) 
+				navigate('/');
+			else
+				showNotification({
+					type: 'error',
+					title: 'Erro ao tentar logar',
+					message: 'Email ou senha inválidos',
+				});
 		});
 ;	};
 
@@ -42,7 +44,7 @@ const SignInPage: React.FC = () => {
 					<Typography variant="inherit" color={(theme) => theme.palette.sysText?.tertiary}>
 						{'{'}
 					</Typography>
-					Boilerplate
+					Biblioteca Synergia
 					<Typography variant="inherit" color="sysText.tertiary">
 						{'}'}
 					</Typography>

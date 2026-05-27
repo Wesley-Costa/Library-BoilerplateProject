@@ -14,15 +14,28 @@ const _mapRolesRecursos: MapRolesRecursos = {
 	[RoleType.USUARIO]: [
 		..._getAllValues(HomeResources),
 		..._getAllValues(SysFormTestPageResources),
-		..._getAllValues(Author),
-		..._getAllValues(Book),
-		..._getAllValues(Loan),
 		Usuarios.USUARIO_UPDATE,
 		Usuarios.USUARIO_VIEW,
+
+		Loan.LOAN_CREATE,
+		Loan.LOAN_UPDATE,
+		Loan.LOAN_VIEW,
+
+		Book.BOOK_CREATE,
+		Book.BOOK_UPDATE,
+		Book.BOOK_VIEW,
+
+		Author.AUTHOR_CREATE,
+		Author.AUTHOR_UPDATE,
+		Author.AUTHOR_VIEW,
 	],
 	[RoleType.ADMINISTRADOR]: [
 		Usuarios.USUARIO_CREATE,
 		Usuarios.USUARIO_REMOVE,
+
+		Loan.LOAN_REMOVE,
+		Author.AUTHOR_REMOVE,
+		Book.BOOK_REMOVE,
 	],
 };
 

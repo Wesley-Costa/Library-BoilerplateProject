@@ -10,7 +10,7 @@ export interface IBooks extends IDoc {
     yearPublication: number;
     category: string;
     volumes: number;
-    createdBy: string | null;
+    createdBy: string;
     createdAt: Date;
     updatedAt: Date;
 }

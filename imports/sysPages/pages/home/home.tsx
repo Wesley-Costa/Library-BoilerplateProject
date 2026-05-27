@@ -8,7 +8,7 @@ const Home: React.FC = () => {
 	return (
 		<Container>
 			<Header>
-				<Typography variant="h3">Página de testes</Typography>
+				<Typography variant="h3">Biblioteca Synergia</Typography>
 				<Typography variant="body1" textAlign={'justify'}>
 					Sistema de biblioteca desenvolvido para exemplificar a estrutura de um projeto moderno utilizando React,
 					TypeScript, MongoDB e Meteor. Este projeto serve como um ponto de partida para desenvolvedores que desejam

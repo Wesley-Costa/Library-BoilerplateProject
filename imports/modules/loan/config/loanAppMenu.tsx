@@ -5,7 +5,7 @@ import { Recurso } from './recursos';
 
 export const loansMenuItemList: (IAppMenu | null)[] = [
 	{
-		path: '/loans/view',
+		path: '/loans/list',
 		name: 'Empréstimo de Livros',
 		icon: <SysIcon name={'shoppingCart'} />,
 		resources: [Recurso.LOAN_VIEW]

@@ -2,8 +2,8 @@
 	"name": "MeteorReactBase-MUI",
 	"short_name": "MRB",
 	"mail_no_reply": "no-reply@meteorreactbase.com",
-	"mail_system": "contact@@meteorreactbase.com",
-	"mail_url_smtp": "smtp://mail.smtpbucket.com:8025",
+	"mail_system": "contact@meteorreactbase.com",
+	"mail_url_smtp": "smtp://74cdbed18ddb41:78ea0be71f210e@sandbox.smtp.mailtrap.io:2525",
 	"service": "MeteorReactBase-MUI",
 	"settingsGoogle": {
 		"client_secret": "<client_secret>",

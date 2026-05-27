@@ -29,6 +29,7 @@
     "connect-route": "^0.1.5",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
+    "handlebars": "^4.7.9",
     "idb-keyval": "^6.2.1",
     "jquery": "^3.7.1",
     "later": "^1.2.0",

@@ -12,7 +12,7 @@ import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 
 const UserProfileDetailView = () => {
 	const context = useContext(UserProfileDetailControllerContext);
-	const { user, onSubmit, schema, mode, closeDialog, loading } = context;
+	const { user, onSubmit, schema, mode, closeDialog, loading, isAdmin } = context;
 	const sysFormRef = useRef<ISysFormRef>(null);
 	const { Container, FieldsForm, Actions } = UserProfileDetailStyles;
 
@@ -25,7 +25,11 @@ const UserProfileDetailView = () => {
 				<FieldsForm>
 					<SysTextField name="username" placeholder="Ex.: José da Silva" />
 					<SysTextField name="email" placeholder="Ex.: jose.silva@email.com" />
-					<SysSelectField name="roles" placeholder="Selecionar" />
+					<SysSelectField
+						name="roles"
+						placeholder="Selecionar"
+						disabled={!isAdmin}
+					/>
 					<Actions>
 						<Button variant="outlined" startIcon={<SysIcon name={'close'} />} onClick={closeDialog}>
 							Cancelar

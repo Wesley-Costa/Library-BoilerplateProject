@@ -7,6 +7,8 @@ import LoansListView from './loansListView';
 import { loansApi } from '../../api/loansApi';
 import { ILoans } from '../../api/loansSch';
 import { booksApi } from '/imports/modules/book/api/booksApi';
+import { userprofileApi } from '../../../userprofile/api/userProfileApi';
+import { Meteor } from 'meteor/meteor';
 
 interface ILoansListContollerContext {
 	loans: ILoans[];
@@ -17,8 +19,10 @@ interface ILoansListContollerContext {
 	loansList: ILoans[];
 	loansPage: number;
 	totalPages: number;
+	isAdmin: boolean;
 	formatDate: (date: string | Date) => string;
 	onEditLoan: (loan: ILoans) => void;
+	onViewLoan: (loan: ILoans) => void;
 	onAddLoan: () => void;
 	onDeleteLoan: (loan: ILoans) => void;
 	onNextPage: () => void;
@@ -26,6 +30,7 @@ interface ILoansListContollerContext {
 	getBookTitle: (loan: ILoans) => string;
 	onExtensionLoan: (loan: ILoans) => void;
 	onReturnLoan: (loan: ILoans) => void;
+	translateStatus: (status: string) => string;
 }
 
 export const LoansListControllerContext = createContext<ILoansListContollerContext>({} as ILoansListContollerContext);
@@ -40,6 +45,19 @@ const LoansListController = () => {
 		if (!date) return '-';
 		const d = new Date(date);
 		return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+	}, []);
+
+	const translateStatus = useCallback((status = '') => {
+		return status === 'returned' ? 'Devolvido' : status === 'borrowed' ? 'Emprestado' : 'Consultar Administrador!';
+	}, []);
+
+	const { isAdmin } = useTracker(() => {
+		const meteorUserId = Meteor.userId();
+		const subHandle = userprofileApi.subscribe('userProfileDetail', { _id: meteorUserId });
+		const loggedUserProfile = subHandle?.ready() ? userprofileApi.findOne({ _id: meteorUserId }) : null;
+		return {
+			isAdmin: loggedUserProfile?.roles?.includes('Administrador') ?? false
+		};
 	}, []);
 
 	const { loansList, loadingLoans, loansTotal } = useTracker(() => {
@@ -68,7 +86,9 @@ const LoansListController = () => {
 		(loan: ILoans) => {
 			const book = books.find((b) => b._id === loan.bookId);
 			return book ? book.title : 'Livro desconhecido';
-		}, [books]);
+		},
+		[books]
+	);
 
 	const totalPages = Math.max(1, Math.ceil(loansTotal / PAGE_SIZE));
 
@@ -76,7 +96,7 @@ const LoansListController = () => {
 	const onAddLoan = useCallback(() => navigate('/loans/create'), [navigate]);
 	const onExtensionLoan = useCallback((loan: ILoans) => navigate(`/loans/extension/${loan._id}`), [navigate]);
 	const onReturnLoan = useCallback((loan: ILoans) => navigate(`/loans/return/${loan._id}`), [navigate]);
-
+	const onViewLoan = useCallback((loan: ILoans) => navigate(`/loans/view/${loan._id}`), [navigate]);
 
 	const onDeleteLoan = useCallback(
 		(loan: ILoans) => {
@@ -120,6 +140,7 @@ const LoansListController = () => {
 			loansList,
 			loansPage,
 			totalPages,
+			isAdmin,
 			formatDate,
 			onEditLoan,
 			onExtensionLoan,
@@ -128,7 +149,9 @@ const LoansListController = () => {
 			onDeleteLoan,
 			onNextPage,
 			onPrevPage,
-			getBookTitle
+			getBookTitle,
+			translateStatus,
+			onViewLoan
 		}),
 		[
 			loansList,
@@ -136,6 +159,7 @@ const LoansListController = () => {
 			loansTotal,
 			loansPage,
 			totalPages,
+			isAdmin,
 			formatDate,
 			onEditLoan,
 			onReturnLoan,
@@ -144,7 +168,9 @@ const LoansListController = () => {
 			onDeleteLoan,
 			onNextPage,
 			onPrevPage,
-			getBookTitle
+			getBookTitle,
+			translateStatus,
+			onViewLoan
 		]
 	);
 
