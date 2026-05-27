@@ -12,7 +12,7 @@ import SysIcon from '../../../../ui/components/sysIcon/sysIcon';
 
 const UserProfileLisView = () => {
 	const context = useContext(UserProfileListControllerContext);
-	const { list, onSearch, onSetFilter, onAddButtonClick } = context;
+	const { list, isAdmin, onSearch, onSetFilter, onAddButtonClick } = context;
 	const [selectedRole, setSelectedRole] = useState('');
 	const theme = useTheme();
 	const { Container, Filters } = UserProfileListViewStyled;
@@ -72,13 +72,15 @@ const UserProfileLisView = () => {
 						/>
 					);
 				})}
-			<SysFab
-				variant="extended"
-				text="Adicionar"
-				startIcon={<SysIcon name={'add'} />}
-				fixed={true}
-				onClick={onAddButtonClick}
-			/>
+			{isAdmin && (
+				<SysFab
+					variant="extended"
+					text="Adicionar"
+					startIcon={<SysIcon name={'add'} />}
+					fixed={true}
+					onClick={onAddButtonClick}
+				/>
+			)}
 		</Container>
 	);
 };

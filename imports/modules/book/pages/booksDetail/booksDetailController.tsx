@@ -92,6 +92,8 @@ const BooksDetailController = () => {
 				...doc,
 				_id: id,
 				updatedAt: updatedAt,
+				yearPublication: Number(doc.yearPublication),
+				volumes: Number(doc.volumes)
 			};
 
 			booksApi.update(enrichedDoc, (e: IMeteorError) => {

@@ -7,6 +7,7 @@ import SysForm from '../../../../ui/components/sysForm/sysForm';
 import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/sysTextField';
 import SysFormButton from '../../../../ui/components/sysFormFields/sysFormButton/sysFormButton';
 import { SysButton } from '../../../../ui/components/SimpleFormFields/SysButton/SysButton';
+import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 
 
 const AuthorsCreateView = () => {
@@ -26,7 +27,10 @@ const AuthorsCreateView = () => {
 					<FormColumn>
 						<SysTextField name="name" placeholder="Nome do autor" />
                         <Stack direction="row" width="100%" spacing={2}>
-							<SysTextField name="nationality" placeholder="Nacionalidade do autor" />
+							<SysSelectField 
+								name="nationality" 
+								placeholder="Nacionalidade do autor" 
+							/>
 							<SysTextField
 								name="birthDate"
 								placeholder="Data de nascimento do autor"

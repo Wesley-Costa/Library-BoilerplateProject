@@ -1,35 +1,52 @@
 import { Meteor } from 'meteor/meteor';
 import { Email } from 'meteor/email';
 import settings from '/settings';
+import { check } from 'meteor/check';
 
 const configureMailServer = () => {
 	// process.env.MAIL_URL = 'smtp://192.168.0.13:25';
 	process.env.MAIL_URL = settings.mail_url_smtp;
 };
 
-export const getHTMLEmailTemplate = (title = settings.name, text = 'Message', footer) => {
-	SSR.compileTemplate('htmlEmail', Assets.getText('templateEmail.html'));
-	const email = SSR.render('htmlEmail', {
+export const getHTMLEmailTemplate = async (
+	title = settings.name,
+	text = 'Message',
+	footer?: string
+): Promise<string> => {
+	let template = await Assets.getTextAsync('templateEmail.html');
+
+	const data: Record<string, string> = {
 		title,
 		text,
-		footer
+		footer: footer ?? '',
+	};
+
+	template = template.replace(/\{\{\{?\s*(\w+)\s*\}?\}\}/g, (_, key) => {
+		return data[key] ?? '';
 	});
-	return email;
+
+	return template;
 };
 
-function sendEmail(to, from, subject, msg, attachments = [], callback) {
+async function sendEmail(
+	to: string,
+	from: string,
+	subject: string,
+	msg: string,
+	attachments: object[] = []
+): Promise<string> {
 	// Make sure that all arguments are strings.
 	check([to, from, subject, msg], [String]);
-	// Let other method calls from the same client start running, without
+    // Let other method calls from the same client start running, without
 	// waiting for the email sending to complete.
 	// this.unblock();
 	try {
-		const a = Email.send({
+		await Email.sendAsync({
 			to,
 			from,
 			subject,
 			replyTo: settings.mail_no_reply,
-			html: getHTMLEmailTemplate(subject, msg),
+			html: await getHTMLEmailTemplate(subject, msg),
 			attachments
 		});
 		return 'EMAIL OK';

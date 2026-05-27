@@ -16,13 +16,13 @@ interface IAuthorsListContollerContext {
 	authorsList: IAuthors[];
 	authorsPage: number;
 	totalPages: number;
-
 	formatDate: (date: string | Date) => string;
 	onEditAuthor: (author: IAuthors) => void;
 	onAddAuthor: () => void;
 	onDeleteAuthor: (author: IAuthors) => void;
 	onNextPage: () => void;
 	onPrevPage: () => void;
+	translateNacionality: (nationality: string) => String;
 }
 
 export const AuthorsListControllerContext = createContext<IAuthorsListContollerContext>(
@@ -63,6 +63,10 @@ const AuthorsListController = () => {
 			total: totalAuthors
 		};
 	}, [authorsPage]);
+
+	const translateNacionality = useCallback((nationality = '') => {
+		return nationality === 'nacional' ? 'Nacional' : nationality === 'international' ? 'Internacional' : ""
+	}, []);
 
 	useEffect(() => {
 		if (!loadingAuthors) {
@@ -142,7 +146,8 @@ const AuthorsListController = () => {
 			onDeleteAuthor,
 			onNextPage,
 			onPrevPage,
-			formatDate
+			formatDate,
+			translateNacionality
 		}),
 		[
 			visibleAuthors,
@@ -155,7 +160,8 @@ const AuthorsListController = () => {
 			onDeleteAuthor,
 			onNextPage,
 			onPrevPage,
-			formatDate
+			formatDate,
+			translateNacionality
 		]
 	);
 

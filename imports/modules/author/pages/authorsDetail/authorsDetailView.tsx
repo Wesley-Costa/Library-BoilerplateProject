@@ -7,6 +7,7 @@ import SysTextField from '../../../../ui/components/sysFormFields/sysTextField/s
 import SysFormButton from '../../../../ui/components/sysFormFields/sysFormButton/sysFormButton';
 import { SysButton } from '../../../../ui/components/SimpleFormFields/SysButton/SysButton';
 import { Typography, Stack } from '@mui/material';
+import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 
 const AuthorsDetailView = () => {
 	const controller = useContext(AuthorsDetailControllerContext);
@@ -25,7 +26,7 @@ const AuthorsDetailView = () => {
 					<FormColumn>
 						<SysTextField name="name" placeholder="Nome do autor" />
 						<Stack direction="row" width="100%" spacing={2}>
-							<SysTextField name="nationality" placeholder="Nacionalidade do autor" />
+							<SysSelectField name="nationality" placeholder="Nacionalidade do autor" />
 							<SysTextField
 								name="birthDate"
 								placeholder="Data de nascimento do autor"

@@ -38,7 +38,7 @@ const AuthorsListView = () => {
 				</Typography>
 				<Stack>
 					<Typography variant="body2" color="textSecondary">
-						Nacionalidade: {author.nationality}
+						Nacionalidade: {controller.translateNacionality(author.nationality)}
 					</Typography>
 					<Typography variant="body2" color="textSecondary">
 						Data de Nascimento: {controller.formatDate(author.birthDate)}

@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
+import { Meteor } from 'meteor/meteor';
 import UserProfileListView from './userProfileListView';
 import { IUserProfile } from '../../api/userProfileSch';
 import { useTracker } from 'meteor/react-meteor-data';
@@ -21,6 +22,8 @@ interface IInitialConfig {
 
 interface IUserProfileListContollerContext {
 	list: IUserProfile[];
+	isAdmin: boolean;
+	loggedUserId: string | null;
 	translateStatus: (status: string | undefined) => string;
 	onChangeStatusClick: (id: string) => void;
 	onSearch: (username: string | undefined) => void;
@@ -54,6 +57,16 @@ const UserProfileListController = () => {
 	};
 	const limit = pageProperties.pageSize;
 	const skip = (pageProperties.currentPage - 1) * pageProperties.pageSize;
+
+	const { isAdmin, loggedUserId } = useTracker(() => {
+		const meteorUserId = Meteor.userId();
+		const subHandle = userprofileApi.subscribe('userProfileDetail', { _id: meteorUserId });
+		const loggedUserProfile = subHandle?.ready() ? userprofileApi.findOne({ _id: meteorUserId }) : null;
+		return {
+			loggedUserId: meteorUserId,
+			isAdmin: loggedUserProfile?.roles?.includes('Administrador') ?? false
+		};
+	}, []);
 
 	const {
 		loading,
@@ -93,41 +106,68 @@ const UserProfileListController = () => {
 		}
 	}, []);
 
-	const onChangeStatusClick = useCallback((id = '') => {
-		userprofileApi.changeUserStatus(id, (e: IMeteorError, r: boolean) => {
-			if (!e) {
-				showNotification({
-					type: 'success',
-					title: 'Operação realizada!',
-					message: `Status alterado com sucesso`
-				});
-			} else {
-				console.error('Error:', e);
+	const onChangeStatusClick = useCallback(
+		(id = '') => {
+			if (!isAdmin) {
 				showNotification({
 					type: 'warning',
-					title: 'Operação não realizada!',
-					message: `Erro ao realizar a operação: ${e.reason}`
+					title: 'Acesso negado!',
+					message: 'Apenas administradores podem alterar o status dos usuários.'
 				});
+				return;
 			}
-		});
-	}, []);
+			userprofileApi.changeUserStatus(id, (e: IMeteorError, r: boolean) => {
+				if (!e) {
+					showNotification({
+						type: 'success',
+						title: 'Operação realizada!',
+						message: `Status alterado com sucesso`
+					});
+				} else {
+					console.error('Error:', e);
+					showNotification({
+						type: 'warning',
+						title: 'Operação não realizada!',
+						message: `Erro ao realizar a operação: ${e.reason}`
+					});
+				}
+			});
+		},
+		[isAdmin]
+	);
 
 	const onEdit = useCallback(
 		(id: string) => {
+			if (!isAdmin && id !== loggedUserId) {
+				showNotification({
+					type: 'warning',
+					title: 'Acesso negado!',
+					message: 'Você só pode editar o seu próprio perfil.'
+				});
+				return;
+			}
 			showDialog({
 				sx: { borderRadius: sysSizing.radiusMd },
 				children: <UserProfileDetailController id={id} mode="edit" />
 			});
 		},
-		[userList]
+		[userList, isAdmin, loggedUserId]
 	);
 
 	const onAddButtonClick = useCallback(() => {
+		if (!isAdmin) {
+			showNotification({
+				type: 'warning',
+				title: 'Acesso negado!',
+				message: 'Apenas administradores podem cadastrar novos usuários.'
+			});
+			return;
+		}
 		showDialog({
 			sx: { borderRadius: sysSizing.radiusMd },
 			children: <UserProfileDetailController id={nanoid()} mode="create" />
 		});
-	}, [userList]);
+	}, [userList, isAdmin]);
 
 	const onSearch = useCallback((username: string | undefined) => {
 		const searchUsername = username !== undefined ? username.trim() : '';
@@ -156,6 +196,8 @@ const UserProfileListController = () => {
 	const providerValues = useMemo(
 		() => ({
 			list: userList,
+			isAdmin,
+			loggedUserId,
 			translateStatus,
 			onChangeStatusClick,
 			onSearch,
@@ -163,7 +205,7 @@ const UserProfileListController = () => {
 			onAddButtonClick,
 			onEdit
 		}),
-		[userList]
+		[userList, isAdmin, loggedUserId]
 	);
 
 	return (

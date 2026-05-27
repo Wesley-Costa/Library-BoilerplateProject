@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
+import { Meteor } from 'meteor/meteor';
 import UserProfileDetailView from './userProfileDetailView';
 import { useTracker } from 'meteor/react-meteor-data';
 import { userprofileApi } from '../../api/userProfileApi';
@@ -14,6 +15,7 @@ interface IUserProfileDetailControllerContext {
 	onSubmit: (doc: IUserProfile) => void;
 	mode: 'create' | 'edit';
 	closeDialog: () => void;
+	isAdmin: boolean;
 }
 
 interface IUserProfileDetailController {
@@ -28,6 +30,17 @@ export const UserProfileDetailControllerContext = React.createContext<IUserProfi
 const UserProfileDetailController = ({ id, mode }: IUserProfileDetailController) => {
 	const { showNotification, closeDialog } = useContext<IAppLayoutContext>(AppLayoutContext);
 	const [loading, setLoading] = useState(false);
+
+	const { isAdmin } = useTracker(() => {
+		const meteorUserId = Meteor.userId();
+		const subHandle = userprofileApi.subscribe('userProfileDetail', { _id: meteorUserId });
+		const loggedUserProfile = subHandle?.ready()
+			? userprofileApi.findOne({ _id: meteorUserId })
+			: null;
+		return {
+			isAdmin: loggedUserProfile?.roles?.includes('Administrador') ?? false
+		};
+	}, []);
 
 	const { user, trackerLoading } = useTracker(() => {
 		const subHandle = userprofileApi.subscribe('userProfileDetail', { _id: id });
@@ -59,7 +72,7 @@ const UserProfileDetailController = ({ id, mode }: IUserProfileDetailController)
 				closeDialog();
 			});
 		},
-		[user]
+		[user, isAdmin]
 	);
 
 	return (
@@ -70,7 +83,8 @@ const UserProfileDetailController = ({ id, mode }: IUserProfileDetailController)
 				onSubmit,
 				schema: userprofileApi.getSchema(),
 				mode,
-				closeDialog
+				closeDialog,
+				isAdmin
 			}}>
 			<UserProfileDetailView />
 		</UserProfileDetailControllerContext.Provider>

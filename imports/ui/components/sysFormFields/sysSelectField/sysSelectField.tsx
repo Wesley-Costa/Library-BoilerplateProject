@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { IOption, ISysFormComponent } from '../../InterfaceBaseSimpleFormComponent';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
@@ -73,6 +73,10 @@ export const SysSelectField: React.FC<ISysSelectFieldProps> = ({
 	const [errorState, setErrorState] = useState<string | undefined>(error);
 	const [optionsState, setOptionsState] = useState<Array<IOption> | undefined>(options);
 
+	useEffect(() => {
+		setOptionsState(options);
+	}, [options]);
+
 	if (inSysFormContext)
 		controllerSysForm.setInteractiveMethods({
 			componentRef: refObject!,
@@ -85,8 +89,7 @@ export const SysSelectField: React.FC<ISysSelectFieldProps> = ({
 
 	const handleChange = (e: SelectChangeEvent) => {
 		const newValue = e.target.value;
-		const selectedOption = optionsState?.find((option) => option.value === newValue);
-		setValueState(selectedOption?.label || '');
+		setValueState(newValue);
 		if (inSysFormContext) {
 			controllerSysForm?.onChangeComponentValue({ refComponent: refObject!, value: newValue });
 		}
@@ -126,15 +129,16 @@ export const SysSelectField: React.FC<ISysSelectFieldProps> = ({
 						disabled={disabled || loading}
 						multiple={multiple}
 						IconComponent={() => <SysIcon name={'arrowDropDown'} />}
-						renderValue={(options) => {
-							if (!hasValue(options)) {
+						renderValue={(selected) => {
+							if (!hasValue(selected)) {
 								return (
 									<Typography variant="body1" color={'text.disabled'}>
 										{placeholder}
 									</Typography>
 								);
 							}
-							return options;
+							const option = options?.find((opt) => opt.value === selected);
+							return option?.label ?? String(selected);
 						}}>
 						{options?.length === 0 ? (
 							<MenuItem id={'NoValues'} disabled value="">

@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import LoansCreateView from './loansCreateView';
 import { useNavigate } from 'react-router-dom';
 import { loansApi } from '../../api/loansApi';
@@ -12,13 +12,13 @@ import { booksApi } from '../../../book/api/booksApi';
 
 interface ILoansCreateControllerContext {
 	closePage: () => void;
+	onSubmit: (doc: ILoans) => void;
+	setSelectedBook: (id: string) => void;
 	document: ILoans;
 	schema: ISchema<ILoans>;
-	onSubmit: (doc: ILoans) => void;
 	optionsBooks: { value: string; label: string }[];
 	loadingBooks: boolean;
 	selectedBook: string;
-	setSelectedBook: (id: string) => void;
 	availableVolumes: number | null;
 }
 
@@ -29,7 +29,7 @@ export const LoansCreateControllerContext = createContext<ILoansCreateController
 const LoansCreateController = () => {
 	const navigate = useNavigate();
 	const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
-	const [selectedBook, setSelectedBook] = React.useState<string>('');
+	const [selectedBook, setSelectedBook] = useState<string>('');
 
 	const { optionsBooks, loadingBooks, availableVolumes } = useTracker(() => {
 		const booksHandle = booksApi.subscribe('books.list') ?? null;
@@ -50,7 +50,7 @@ const LoansCreateController = () => {
 	}, [selectedBook]);
 
 	const closePage = useCallback(() => {
-		navigate('/loans/view');
+		navigate('/loans/list');
 	}, [navigate]);
 
 	const onSubmit = useCallback(
@@ -149,8 +149,8 @@ const LoansCreateController = () => {
 				optionsBooks,
 				loadingBooks,
 				selectedBook,
-				setSelectedBook,
 				availableVolumes,
+				setSelectedBook,
 				onSubmit,
 				closePage
 			}}>

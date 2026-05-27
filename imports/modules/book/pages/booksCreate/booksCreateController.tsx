@@ -56,7 +56,9 @@ const BooksCreateController = () => {
 				...doc,
 				createdBy: user,
 				createdAt: now,
-				updatedAt: now
+				updatedAt: now,
+				yearPublication: Number(doc.yearPublication),
+				volumes: Number(doc.volumes)
 			};
 
 			booksApi.insert(enrichedDoc, (e: IMeteorError) => {

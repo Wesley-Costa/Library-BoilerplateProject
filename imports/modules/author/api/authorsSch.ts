@@ -22,7 +22,11 @@ export const authorsSch: ISchema<IAuthors> = {
         type: String,
         label: 'Nacionalidade',
         defaultValue: '',
-        optional: false
+        optional: false,
+        options: () => [
+            { value: 'nacional', label: 'Nacional' },
+            { value: 'internacional', label: 'Internacional' },
+        ]
     },
     birthDate: {
         type: Date,

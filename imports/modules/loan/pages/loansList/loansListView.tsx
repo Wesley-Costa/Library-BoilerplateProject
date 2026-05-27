@@ -36,9 +36,12 @@ const LoanListView = () => {
 			}}>
 			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 				<Typography variant="h6" fontWeight={600}>
-					Data de Registro: {controller.formatDate(loan.loanDate)}
+					Status: {controller.translateStatus(loan.status)}
 				</Typography>
 				<Stack>
+					<Typography variant="body2" color="textSecondary">
+						Usuário que realizou o emprestimo: {loan.assignedUser}
+					</Typography>
 					<Typography variant="body2" color="textSecondary">
 						Livro: {controller.getBookTitle(loan)}
 					</Typography>
@@ -79,17 +82,34 @@ const LoanListView = () => {
 						/>
 					</>
 				)}
-				<SysButton
-					variant="contained"
-					startIcon={<SysIcon name="edit" />}
-					color="primary"
-					onClick={(e: React.MouseEvent) => {
-						e.stopPropagation();
-						controller.onEditLoan(loan);
-					}}
-					title="Editar"
-					sx={styleButton}
-				/>
+				{loan.status === 'returned' && (
+					<SysButton
+						variant="contained"
+						startIcon={<SysIcon name="visibility" />}
+						color="primary"
+						onClick={(e: React.MouseEvent) => {
+							e.stopPropagation();
+							controller.onViewLoan(loan);
+						}}
+						title="Editar"
+						sx={styleButton}
+					/>
+				)}
+				{controller.isAdmin && (
+					<>
+						<SysButton
+							variant="contained"
+							startIcon={<SysIcon name="edit" />}
+							color="primary"
+							onClick={(e: React.MouseEvent) => {
+								e.stopPropagation();
+								controller.onEditLoan(loan);
+							}}
+							title="Editar"
+							sx={styleButton}
+						/>
+					</>
+				)}
 				<SysButton
 					variant="contained"
 					startIcon={<SysIcon name="delete" />}
